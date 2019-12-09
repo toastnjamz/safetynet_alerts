@@ -1,4 +1,4 @@
-package com.safetynet.alerts;
+package com.safetynet.alerts.domain;
 
 import java.util.Objects;
 
