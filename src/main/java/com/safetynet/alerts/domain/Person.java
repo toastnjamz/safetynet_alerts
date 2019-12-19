@@ -9,17 +9,17 @@ public class Person {
 	private String address;
 	private String city;
 	private String zip;
-	private String phoneNumber;
+	private String phone;
 	private String email;
 	
 	private Person(String firstName, String lastName, String address, String city, String zip, 
-			String phoneNumber, String email) {
+			String phone, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
 		this.city = city;
 		this.zip = zip;
-		this.phoneNumber = phoneNumber;
+		this.phone = phone;
 		this.email = email;
 	}
 	
@@ -55,12 +55,12 @@ public class Person {
 		this.zip = zip;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getEmail() {
@@ -92,7 +92,7 @@ public class Person {
 		private String address;
 		private String city;
 		private String zip;
-		private String phoneNumber;
+		private String phone;
 		private String email;
 		
 		public Builder firstName(String firstName) {
@@ -120,8 +120,8 @@ public class Person {
 			return this;
 		}
 		
-		public Builder phoneNumber(String phoneNumber) {
-			this.phoneNumber = phoneNumber;
+		public Builder phone(String phone) {
+			this.phone = phone;
 			return this;
 		}
 		
@@ -131,7 +131,7 @@ public class Person {
 		}
 		
 		public Person build() {
-			return new Person(firstName, lastName, address, city, zip, phoneNumber, email);
+			return new Person(firstName, lastName, address, city, zip, phone, email);
 		}
 	}
 }
