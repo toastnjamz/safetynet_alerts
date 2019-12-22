@@ -22,10 +22,15 @@ public class PersonController {
 		this.personService = personService;
 	}
 	
+//	@GetMapping("/person")
+//	public JSONObject getAllPersons() {
+//		personService.getAllPersons();
+//		return null;
+//	}
+	
 	@GetMapping("/person")
-	public JSONObject getAllPersons() {
-		personService.getAllPersons();
-		return null;
+	public String getAllPersons() {
+		return personService.getAllPersons();
 	}
 	
 	@PostMapping("/person")
