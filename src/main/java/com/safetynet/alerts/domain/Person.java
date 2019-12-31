@@ -84,7 +84,7 @@ public class Person {
 		return Objects.hash(firstName, lastName);
 	}
 	
-// Builder pattern class for creating new instances of Person
+	// Builder pattern class for creating new instances of Person
 	public static class Builder {
 		
 		private String firstName;

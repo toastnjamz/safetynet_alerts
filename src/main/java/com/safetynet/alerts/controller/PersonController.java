@@ -1,18 +1,18 @@
 package com.safetynet.alerts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.service.PersonService;
 
 import net.minidev.json.JSONObject;
 
-@Controller
+@RestController
 public class PersonController {
 	
 	private PersonService personService;
