@@ -17,7 +17,7 @@ public class JsonLoader {
 
 	private List<Person> personList = new ArrayList<Person>();
 	
-	// Constructor deserializes data from JSON file
+	// Constructor de-serializes data from JSON file
 	public JsonLoader() throws IOException {
 		String jsonFilePath = "src/main/resources/data.json";
 		byte[] byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());

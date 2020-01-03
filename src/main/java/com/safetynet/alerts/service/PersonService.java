@@ -26,18 +26,22 @@ public class PersonService {
 		return JsonStream.serialize(personRepository.findAll());
 	}
 	
+	public String getPersonByFirstLastName(String firstLastName) {
+		return JsonStream.serialize(personRepository.findPerson(firstLastName));
+	}
+	
 	public void createPerson(Person person) {
 		personRepository.createPerson(person);
 		
 	}
 	
-	public void updatePerson(String firstAndLastName) {
-		personRepository.updatePerson(firstAndLastName);
+	public void updatePerson(String firstLastName) {
+		personRepository.updatePerson(firstLastName);
 		
 	}
 	
-	public void deletePerson(String firstAndLastName) {
-		personRepository.deletePerson(firstAndLastName);
+	public void deletePerson(String firstLastName) {
+		personRepository.deletePerson(firstLastName);
 	}
 
 }

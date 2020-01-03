@@ -25,18 +25,17 @@ public class PersonRepository {
 		return personList;
 	}
 
-	public void createPerson(Person person) {
-		personList.add(person);
-	}
-	
-	// Do I need this method?
-	public Person findPerson(String firstAndLastName) {
+	public Person findPerson(String firstLastName) {
 		for (Person person : personList) {
-			if (person.getLastName().equals(firstAndLastName)) {
+			if (person.getFirstLastName().equals(firstLastName)) {
 				return person;
 			}
 		}
 		return null;
+	}
+	
+	public void createPerson(Person person) {
+		personList.add(person);
 	}
 
 	public void updatePerson(String firstAndLastName) {

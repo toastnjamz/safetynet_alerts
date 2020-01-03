@@ -30,6 +30,11 @@ public class Person {
 	public String getLastName() {
 		return lastName;
 	}
+	
+	// REST unique composite identifier
+	public String getFirstLastName() {
+		return getFirstName() + getLastName();
+	}
 
 	public String getAddress() {
 		return address;
