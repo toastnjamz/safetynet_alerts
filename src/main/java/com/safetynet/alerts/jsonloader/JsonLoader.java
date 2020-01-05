@@ -17,7 +17,7 @@ public class JsonLoader {
 
 	private List<Person> personList = new ArrayList<Person>();
 	
-	// Constructor de-serializes data from JSON file
+	// Constructor deserializes data from JSON file
 	public JsonLoader() throws IOException {
 		String jsonFilePath = "src/main/resources/data.json";
 		byte[] byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
@@ -38,16 +38,5 @@ public class JsonLoader {
 	
 	public List<Person> getPersons() {
 		return personList;
-	}
-	
-	// TODO: Delete this test method
-	public void printPersons() {
-		personList.forEach(p -> System.out.println(p.getFirstName()
-				.concat(p.getLastName())
-				.concat(p.getAddress())
-				.concat(p.getCity())
-				.concat(p.getPhone())
-				.concat(p.getEmail())
-				.concat(p.getZip())));
 	}
 }

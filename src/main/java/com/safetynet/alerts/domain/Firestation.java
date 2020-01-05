@@ -3,13 +3,13 @@ package com.safetynet.alerts.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Firestation {
+public class FireStation {
 	
 	private Set<String> addresses = new HashSet<String>();
-	private String station;
+	private String stationNo;
 	
-	public Firestation(String station) {
-		this.station = station;
+	public FireStation(String stationNo) {
+		this.stationNo = stationNo;
 	}
 
 	public Set<String> getAddresses() {
@@ -20,11 +20,11 @@ public class Firestation {
 		addresses.add(address);
 	}
 
-	public String getStation() {
-		return station;
+	public String getStationNo() {
+		return stationNo;
 	}
 
-	public void setStation(String station) {
-		this.station = station;
+	public void setStationNo(String stationNo) {
+		this.stationNo = stationNo;
 	}
 }

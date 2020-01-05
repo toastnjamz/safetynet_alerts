@@ -2,6 +2,8 @@ package com.safetynet.alerts.domain;
 
 import java.util.Objects;
 
+import com.jsoniter.annotation.JsonIgnore;
+
 public class Person {
 	
 	private final String firstName;
@@ -32,6 +34,7 @@ public class Person {
 	}
 	
 	// REST unique composite identifier
+	@JsonIgnore
 	public String getFirstLastName() {
 		return getFirstName() + getLastName();
 	}
