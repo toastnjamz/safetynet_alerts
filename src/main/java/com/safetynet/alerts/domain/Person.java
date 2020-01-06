@@ -34,6 +34,7 @@ public class Person {
 	}
 	
 	// REST unique composite identifier
+	// TODO: Figure out why this isn't working
 	@JsonIgnore
 	public String getFirstLastName() {
 		return getFirstName() + getLastName();

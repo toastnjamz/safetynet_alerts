@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jsoniter.annotation.JsonObject;
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -30,8 +31,8 @@ public class PersonService {
 		return JsonStream.serialize(personRepository.findPerson(firstLastName));
 	}
 	
-	public void createPerson(Person person) {
-		personRepository.createPerson(person);
+	public String createPerson(Person person) {
+		return JsonStream.serialize(personRepository.createPerson(person));
 		
 	}
 	

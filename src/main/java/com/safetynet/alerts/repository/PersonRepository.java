@@ -35,8 +35,9 @@ public class PersonRepository {
 		return null;
 	}
 	
-	public void createPerson(Person person) {
+	public Person createPerson(Person person) {
 		personList.add(person);
+		return person;
 	}
 
 	public void updatePerson(String firstAndLastName) {
