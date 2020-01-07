@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.jsoniter.annotation.JsonObject;
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
+import com.safetynet.alerts.exception.DuplicatePersonException;
 import com.safetynet.alerts.repository.PersonRepository;
 
 import net.minidev.json.JSONObject;
@@ -31,7 +32,12 @@ public class PersonService {
 		return JsonStream.serialize(personRepository.findPerson(firstLastName));
 	}
 	
-	public String createPerson(Person person) {
+	//TODO: Fix throw statement
+	public String createPerson(Person person) throws DuplicatePersonException {
+		
+		if (personRepository.findPerson(person.getFirstLastName()) != null) {
+			throw new DuplicatePersonException("", null);
+		}
 		return JsonStream.serialize(personRepository.createPerson(person));
 		
 	}

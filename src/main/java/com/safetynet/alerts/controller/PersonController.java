@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 
 import com.jsoniter.annotation.JsonObject;
 import com.safetynet.alerts.domain.Person;
+import com.safetynet.alerts.exception.DuplicatePersonException;
 import com.safetynet.alerts.service.PersonService;
 
 import net.minidev.json.JSONObject;
@@ -48,10 +49,15 @@ public class PersonController {
 		return personService.getPersonByFirstLastName(firstLastName);
 	}
 	
-	@PostMapping()
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@Valid @RequestBody Person person) {
-		return personService.createPerson(person);
+		try {
+			return personService.createPerson(person);
+		} catch (DuplicatePersonException e) {
+			System.err.println("DuplicatePersonException: " + e.getMessage());
+			return null;
+		}
 	}
 	
 	@PutMapping("/person")
