@@ -49,6 +49,7 @@ public class PersonController {
 		return personService.getPersonByFirstLastName(firstLastName);
 	}
 	
+	//TODO: Fix error handing (return correct error and response code)
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@Valid @RequestBody Person person) {
@@ -60,13 +61,14 @@ public class PersonController {
 		}
 	}
 	
-	@PutMapping("/person")
-	public JSONObject updatePerson(String firstAndLastName) {
-		personService.updatePerson(firstAndLastName);
-		return null;
+	@PutMapping("/{firstLastName}")
+	@ResponseStatus(HttpStatus.OK)
+	public void updatePerson(@RequestBody Person person, @PathVariable String firstLastName) {
+		personService.updatePerson(person, firstLastName);
 	}
 	
-	@DeleteMapping("/person")
+	@DeleteMapping("/{firstLastName}")
+	@ResponseStatus(HttpStatus.OK)
 	public void deletePerson(String firstAndLastName) {
 		personService.deletePerson(firstAndLastName);
 	}

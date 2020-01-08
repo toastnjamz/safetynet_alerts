@@ -39,11 +39,13 @@ public class PersonRepository {
 		return person;
 	}
 
-	public void updatePerson(String firstAndLastName) {
-		//TODO	
+	public void updatePerson(String firstLastName) {
+		for (Person person : personList) {
+			if (person.getFirstLastName().equals(firstLastName)) {
+				//TODO	
 	}
-
-	public void deletePerson(String firstAndLastName) {
+	
+	public void deletePerson(String firstLastName) {
 		//TODO
 	}
 }

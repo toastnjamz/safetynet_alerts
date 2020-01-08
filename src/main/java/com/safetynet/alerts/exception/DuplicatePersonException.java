@@ -1,8 +1,17 @@
 package com.safetynet.alerts.exception;
 
-public class DuplicatePersonException extends Exception {
-	public DuplicatePersonException(String errorMessage, Throwable err) {
-		super(errorMessage, err);
-	}
+public class DuplicatePersonException extends RuntimeException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String errorMessage;
 
+	public DuplicatePersonException(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

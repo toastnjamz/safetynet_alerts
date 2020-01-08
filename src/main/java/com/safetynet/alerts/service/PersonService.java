@@ -32,21 +32,27 @@ public class PersonService {
 		return JsonStream.serialize(personRepository.findPerson(firstLastName));
 	}
 	
-	//TODO: Fix throw statement
+	//TODO: Fix error handing (return correct error and response code)
 	public String createPerson(Person person) throws DuplicatePersonException {
 		
 		if (personRepository.findPerson(person.getFirstLastName()) != null) {
-			throw new DuplicatePersonException("", null);
+			throw new DuplicatePersonException("Message from PersonService");
 		}
-		return JsonStream.serialize(personRepository.createPerson(person));
-		
+		return JsonStream.serialize(personRepository.createPerson(person));	
 	}
 	
-	public void updatePerson(String firstLastName) {
+	//TODO
+	public void updatePerson(Person person, String firstLastName) {
+		if (personRepository.findPerson(person.getFirstLastName()) != null) {
+			if (person.getFirstLastName().equals(firstLastName)) {
+				personRepository.updatePerson(firstLastName);
+			}
+		}
 		personRepository.updatePerson(firstLastName);
 		
 	}
 	
+	//TODO
 	public void deletePerson(String firstLastName) {
 		personRepository.deletePerson(firstLastName);
 	}
