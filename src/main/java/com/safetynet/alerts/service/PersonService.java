@@ -1,16 +1,13 @@
 package com.safetynet.alerts.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.jsoniter.annotation.JsonObject;
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.exception.DuplicatePersonException;
+import com.safetynet.alerts.exception.PersonNotFoundException;
 import com.safetynet.alerts.repository.PersonRepository;
 
-import net.minidev.json.JSONObject;
 
 @Service
 public class PersonService {
@@ -19,42 +16,42 @@ public class PersonService {
 	public PersonService(PersonRepository personRepository) {
 		this.personRepository = personRepository;
 	}
-
-//	public List<Person> getAllPersons() {
-//		return personRepository.findAll();
-//	}
 	
 	public String getAllPersons() {
 		return JsonStream.serialize(personRepository.findAll());
 	}
 	
-	public String getPersonByFirstLastName(String firstLastName) {
-		return JsonStream.serialize(personRepository.findPerson(firstLastName));
+	public String getPersonByFirstLastName(String firstName, String lastName) throws PersonNotFoundException {
+		if (personRepository.findPerson(firstName, lastName) == null) {
+			throw new PersonNotFoundException("PersonNotFoundError from PersonService");
+		}
+		return JsonStream.serialize(personRepository.findPerson(firstName, lastName));
 	}
 	
 	//TODO: Fix error handing (return correct error and response code)
 	public String createPerson(Person person) throws DuplicatePersonException {
-		
-		if (personRepository.findPerson(person.getFirstLastName()) != null) {
-			throw new DuplicatePersonException("Message from PersonService");
-		}
-		return JsonStream.serialize(personRepository.createPerson(person));	
-	}
-	
-	//TODO
-	public void updatePerson(Person person, String firstLastName) {
-		if (personRepository.findPerson(person.getFirstLastName()) != null) {
-			if (person.getFirstLastName().equals(firstLastName)) {
-				personRepository.updatePerson(firstLastName);
+		for (Person personInList : personRepository.findAll()) {
+			if (personInList.equals(person)) {
+				throw new DuplicatePersonException("DuplicatePersonError from PersonService");
 			}
 		}
-		personRepository.updatePerson(firstLastName);
-		
+		return JsonStream.serialize(personRepository.createPerson(person));
 	}
 	
-	//TODO
-	public void deletePerson(String firstLastName) {
-		personRepository.deletePerson(firstLastName);
+	public void updatePerson(Person person) throws PersonNotFoundException {
+		for (Person personInList : personRepository.findAll()) {
+			if (personInList.equals(person)) {
+				personRepository.updatePerson(person);
+			}
+			throw new PersonNotFoundException("PersonNotFoundError from PersonService");
+		}
+	}
+	
+	public void deletePerson(String firstName, String lastName) throws PersonNotFoundException {
+		if (personRepository.findPerson(firstName, lastName) == null) {
+			throw new PersonNotFoundException("PersonNotFoundError from PersonService");
+		}
+		personRepository.deletePerson(firstName, lastName);
 	}
 
 }
