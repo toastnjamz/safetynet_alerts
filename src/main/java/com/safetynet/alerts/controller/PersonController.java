@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import com.safetynet.alerts.domain.Person;
@@ -37,49 +37,43 @@ public class PersonController {
 	
 	@GetMapping("/{firstName}/{lastName}")
 	public String getPersonByFirstLastName(@PathVariable("firstName") String firstName,
-		@PathVariable("lastName") String lastName) throws PersonNotFoundException {
+		@PathVariable("lastName") String lastName) {
 		try {
 			return personService.getPersonByFirstLastName(firstName, lastName);
 		} catch (PersonNotFoundException e) {
-			System.err.println("PersonNotFoundException: " + e.getMessage());
-			throw new DuplicatePersonException("Person does not exist");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
 	}
 	
-	//TODO: Error handling for sending incomplete data
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public String createPerson(@RequestBody Person person) throws DuplicatePersonException {
+	public String createPerson(@RequestBody Person person) {
 		try {
 			return personService.createPerson(person);
 		} catch (DuplicatePersonException e) {
-			System.err.println("DuplicatePersonException: " + e.getMessage());
-			throw new DuplicatePersonException("Person already exists");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
 		}
 	}
 	
-	//TODO: Error handling for trying to change firstName or lastName? Sending incomplete data
 	@PutMapping("/{firstName}/{lastName}")
 	@ResponseStatus(HttpStatus.OK)
 	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
-			@PathVariable("lastName") String lastName) throws PersonNotFoundException {
+			@PathVariable("lastName") String lastName) {
 		try {
 			personService.updatePerson(person);
 		} catch (PersonNotFoundException e) {
-			System.err.println("PersonNotFoundException: " + e.getMessage());
-			throw new DuplicatePersonException("Person does not exist");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
 	
 	@DeleteMapping("/{firstName}/{lastName}")
 	@ResponseStatus(HttpStatus.OK)
 	public void deletePerson(@PathVariable("firstName") String firstName, 
-			@PathVariable("lastName") String lastName) throws PersonNotFoundException {
+			@PathVariable("lastName") String lastName) {
 		try {
 			personService.deletePerson(firstName, lastName);
 		} catch (PersonNotFoundException e) {
-			System.err.println("PersonNotFoundException: " + e.getMessage());
-			throw new DuplicatePersonException("Person does not exist");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
 }
