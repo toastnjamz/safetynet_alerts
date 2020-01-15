@@ -1,5 +1,7 @@
 package com.safetynet.alerts.person;
 
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
@@ -34,7 +37,7 @@ public class PersonServiceTest {
 				"555-555-5555", "benegesserit@yahoo.com");
 		List<Person> mockPersons = Arrays.asList(person1, person2);
 		
-		Mockito.when(personRepositoryMock.findAll()).thenReturn(mockPersons);
+		when(personRepositoryMock.findAll()).thenReturn(mockPersons);
 		
 		// act
 		//List<Person> result = personService.getAllPersons();
@@ -45,19 +48,23 @@ public class PersonServiceTest {
 //		Assert.assertTrue(result.get(0).getFirstName().equals("Duncan"));
 //		Assert.assertTrue(result.get(1).getFirstName().equals("Jessica"));
 		
-		JSONAssert.assertEquals
+		//JSONAssert.assertEquals()
 		
 	}
 	
 	@Test
 	public void getPersonByFirstLastName_repositoryHasJsonData_personDataReturned() {
 		// arrange
+		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+				"94501", "555-555-5555", "duncan@gmail.com");
 		
+		when(personRepositoryMock.findPerson("Duncan", "Idaho")).thenReturn(person1);
 		
 		// act
-		
+		String foundPerson = personService.getPersonByFirstLastName(person1.getFirstName(), person1.getLastName());
 		
 		// assert
+		assertEquals("Duncan", foundPerson.getFirstName());
 		
 	}
 	
