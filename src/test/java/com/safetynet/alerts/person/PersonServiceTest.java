@@ -1,13 +1,21 @@
 package com.safetynet.alerts.person;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.CoreMatchers;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -28,6 +36,8 @@ public class PersonServiceTest {
 	@Mock
 	private PersonRepository personRepositoryMock;
 	
+	//TODO: Create @Before setup method?
+	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
 		// arrange
@@ -40,20 +50,16 @@ public class PersonServiceTest {
 		when(personRepositoryMock.findAll()).thenReturn(mockPersons);
 		
 		// act
-		//List<Person> result = personService.getAllPersons();
 		String result = personService.getAllPersons();
 		
 		// assert
-//		Assert.assertTrue(result.size() == 2);
-//		Assert.assertTrue(result.get(0).getFirstName().equals("Duncan"));
-//		Assert.assertTrue(result.get(1).getFirstName().equals("Jessica"));
-		
-		//JSONAssert.assertEquals()
+		assertThat(result, CoreMatchers.containsString("Duncan"));
+		assertThat(result, CoreMatchers.containsString("Jessica"));
 		
 	}
 	
 	@Test
-	public void getPersonByFirstLastName_repositoryHasJsonData_personDataReturned() {
+	public void getPersonByFirstLastName_repositoryHasData_personDataReturned() {
 		// arrange
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
@@ -64,19 +70,23 @@ public class PersonServiceTest {
 		String foundPerson = personService.getPersonByFirstLastName(person1.getFirstName(), person1.getLastName());
 		
 		// assert
-		assertEquals("Duncan", foundPerson.getFirstName());
+		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
 		
 	}
 	
 	@Test
 	public void createPerson_addingOnePerson_personDataReturned() {
 		// arrange
+		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+				"94501", "555-555-5555", "duncan@gmail.com");
 		
+		when(personRepositoryMock.createPerson(person1)).thenReturn(person1);
 		
 		// act
-		
+		String personCreated = personService.createPerson(person1);
 		
 		// assert
+		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
 		
 	}
 	
@@ -95,12 +105,23 @@ public class PersonServiceTest {
 	@Test
 	public void deletePerson_addingAndDeletingPerson_personDataDeleted() {
 		// arrange
+		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+				"94501", "555-555-5555", "duncan@gmail.com");
 		
+		ArgumentCaptor<String> firstNameCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> lastNameCaptor = ArgumentCaptor.forClass(String.class);
+		
+		personService.createPerson(person1);
+		
+		doNothing().when(personRepositoryMock).deletePerson(firstNameCaptor.capture(), lastNameCaptor.capture());
 		
 		// act
-		
+		personService.deletePerson(person1.getFirstName(), person1.getLastName());
 		
 		// assert
+		verify(personRepositoryMock, times(1)).deletePerson(firstNameCaptor.capture(), lastNameCaptor.capture());
+		assertEquals("Duncan", firstNameCaptor.getValue());
+		assertEquals("Idaho", lastNameCaptor.getValue());
 		
 	}
 }
