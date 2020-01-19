@@ -112,7 +112,9 @@ public class PersonServiceTest {
 		String personCreated = personService.createPerson(person1);
 		
 		// assert
+		// This passes
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
+		// This fails (expected:<false> but was:<true>
 		assertEquals(false, personRepositoryMock.findAll().isEmpty());
 	}
 	
