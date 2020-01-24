@@ -34,19 +34,8 @@ public class JsonLoader {
 				(p.get("zip").toString()),
 				(p.get("phone").toString()),
 				(p.get("email").toString()))));
-				//.build()));
 	}
 		
-//		anyPerson.forEach(p -> personList.add(new Person.PersonBuilder.firstName(p.get("firstName").toString())
-//				.lastName(p.get("lastName").toString())
-//				.address(p.get("address").toString())
-//				.city(p.get("city").toString())
-//				.zip(p.get("zip").toString())
-//				.phone(p.get("phone").toString())
-//				.email(p.get("email").toString())
-//				.build()));
-//	}
-	
 	public List<Person> getPersons() {
 		return personList;
 	}

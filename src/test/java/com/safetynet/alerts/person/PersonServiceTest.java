@@ -13,7 +13,6 @@ import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -25,13 +24,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 
-//@RunWith(MockitoJUnitRunner.class)
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(MockitoJUnitRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 public class PersonServiceTest {
 	
 	@InjectMocks

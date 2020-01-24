@@ -33,9 +33,6 @@ public class PersonRepository {
 	}
 	
 	public Person createPerson(Person person) {
-//		if (personList == null) {
-//			this.personList = new ArrayList<Person>();
-//		}
 		personList.add(person);
 		return person;
 	}
