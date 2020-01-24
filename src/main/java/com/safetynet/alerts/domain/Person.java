@@ -84,54 +84,54 @@ public class Person {
 		return Objects.hash(firstName, lastName);
 	}
 	
-	// Builder pattern class for creating new instances of Person
-	public static class Builder {
-		
-		private String firstName;
-		private String lastName;
-		private String address;
-		private String city;
-		private String zip;
-		private String phone;
-		private String email;
-		
-		public Builder firstName(String firstName) {
-			this.firstName = firstName;
-			return this;
-		}
-		
-		public Builder lastName(String lastName) {
-			this.lastName = lastName;
-			return this;
-		}
-		
-		public Builder address(String address) {
-			this.address = address;
-			return this;
-		}
-	
-		public Builder city(String city) {
-			this.city = city;
-			return this;
-		}
-		
-		public Builder zip(String zip) {
-			this.zip = zip;
-			return this;
-		}
-		
-		public Builder phone(String phone) {
-			this.phone = phone;
-			return this;
-		}
-		
-		public Builder email(String email) {
-			this.email = email;
-			return this;
-		}
-		
-		public Person build() {
-			return new Person(firstName, lastName, address, city, zip, phone, email);
-		}
-	}
+//	// Builder pattern class for creating new instances of Person
+//	public static class PersonBuilder {
+//		
+//		private String firstName;
+//		private String lastName;
+//		private String address;
+//		private String city;
+//		private String zip;
+//		private String phone;
+//		private String email;
+//		
+//		public PersonBuilder firstName(String firstName) {
+//			this.firstName = firstName;
+//			return this;
+//		}
+//		
+//		public PersonBuilder lastName(String lastName) {
+//			this.lastName = lastName;
+//			return this;
+//		}
+//		
+//		public PersonBuilder address(String address) {
+//			this.address = address;
+//			return this;
+//		}
+//	
+//		public PersonBuilder city(String city) {
+//			this.city = city;
+//			return this;
+//		}
+//		
+//		public PersonBuilder zip(String zip) {
+//			this.zip = zip;
+//			return this;
+//		}
+//		
+//		public PersonBuilder phone(String phone) {
+//			this.phone = phone;
+//			return this;
+//		}
+//		
+//		public PersonBuilder email(String email) {
+//			this.email = email;
+//			return this;
+//		}
+//		
+//		public Person build() {
+//			return new Person(firstName, lastName, address, city, zip, phone, email);
+//		}
+//	}
 }

@@ -1,5 +1,6 @@
 package com.safetynet.alerts.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,9 @@ import com.safetynet.alerts.domain.Person;
 public class PersonRepository {
 	
 	private List<Person> personList;
-	private JsonLoader jsonLoader;
 	
 	@Autowired
 	public PersonRepository(JsonLoader jsonLoader) {
-		this.jsonLoader = jsonLoader;
 		this.personList = jsonLoader.getPersons();
 	}
 	
@@ -34,6 +33,9 @@ public class PersonRepository {
 	}
 	
 	public Person createPerson(Person person) {
+//		if (personList == null) {
+//			this.personList = new ArrayList<Person>();
+//		}
 		personList.add(person);
 		return person;
 	}

@@ -13,21 +13,25 @@ import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class PersonServiceTest {
 	
 	@InjectMocks
@@ -36,8 +40,6 @@ public class PersonServiceTest {
 	@Mock
 	private PersonRepository personRepositoryMock;
 	
-	//TODO: Create @Before setup method?
-	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
 		// arrange
@@ -45,9 +47,8 @@ public class PersonServiceTest {
 				"94501", "555-555-5555", "duncan@gmail.com");
 		Person person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "94501",
 				"555-555-5555", "benegesserit@yahoo.com");
-		List<Person> mockPersons = Arrays.asList(person1, person2);
 		
-		when(personRepositoryMock.findAll()).thenReturn(mockPersons);
+		when(personRepositoryMock.findAll()).thenReturn(Arrays.asList(person1, person2));
 		
 		// act
 		String result = personService.getAllPersons();
@@ -55,6 +56,7 @@ public class PersonServiceTest {
 		// assert
 		assertThat(result, CoreMatchers.containsString("Duncan"));
 		assertThat(result, CoreMatchers.containsString("Jessica"));
+		assertEquals(2, personRepositoryMock.findAll().size());
 	}
 	
 	@Test
@@ -70,6 +72,8 @@ public class PersonServiceTest {
 		
 		// assert
 		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
+		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
+		assertEquals(1, personRepositoryMock.findAll().size());
 	}
 	
 	@Test
@@ -85,6 +89,7 @@ public class PersonServiceTest {
 		
 		// assert
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
+		assertEquals(1, personRepositoryMock.findAll().size());
 	}
 	
 	@Test
@@ -99,7 +104,6 @@ public class PersonServiceTest {
 		
 	}
 	
-	// THIS IS THE PROBLEM TEST (the above tests pass).
 	@Test
 	public void deletePerson_addingAndDeletingPerson_personDataDeleted() {
 		// arrange
@@ -112,9 +116,7 @@ public class PersonServiceTest {
 		String personCreated = personService.createPerson(person1);
 		
 		// assert
-		// This passes
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
-		// This fails (expected:<false> but was:<true>
 		assertEquals(false, personRepositoryMock.findAll().isEmpty());
 	}
 	

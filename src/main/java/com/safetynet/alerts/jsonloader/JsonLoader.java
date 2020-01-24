@@ -20,21 +20,32 @@ public class JsonLoader {
 	// Constructor deserializes data from JSON file
 	public JsonLoader() throws IOException {
 		String jsonFilePath = "src/main/resources/data.json";
-		byte[] byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
-		
+		byte[] byteArray;
+		byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
+
 		JsonIterator jsoniter = JsonIterator.parse(byteArray);
 		// Any is a lazy container in Jsoniter that can hold different values
 		Any any = jsoniter.readAny();
 		Any anyPerson = any.get("persons");
-		anyPerson.forEach(p -> personList.add(new Person.Builder().firstName(p.get("firstName").toString())
-				.lastName(p.get("lastName").toString())
-				.address(p.get("address").toString())
-				.city(p.get("city").toString())
-				.zip(p.get("zip").toString())
-				.phone(p.get("phone").toString())
-				.email(p.get("email").toString())
-				.build()));
+		anyPerson.forEach(p -> personList.add(new Person(p.get("firstName").toString(),
+				(p.get("lastName").toString()),
+				(p.get("address").toString()),
+				(p.get("city").toString()),
+				(p.get("zip").toString()),
+				(p.get("phone").toString()),
+				(p.get("email").toString()))));
+				//.build()));
 	}
+		
+//		anyPerson.forEach(p -> personList.add(new Person.PersonBuilder.firstName(p.get("firstName").toString())
+//				.lastName(p.get("lastName").toString())
+//				.address(p.get("address").toString())
+//				.city(p.get("city").toString())
+//				.zip(p.get("zip").toString())
+//				.phone(p.get("phone").toString())
+//				.email(p.get("email").toString())
+//				.build()));
+//	}
 	
 	public List<Person> getPersons() {
 		return personList;
