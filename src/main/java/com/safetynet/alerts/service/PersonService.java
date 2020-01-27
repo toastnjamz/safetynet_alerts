@@ -1,5 +1,6 @@
 package com.safetynet.alerts.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jsoniter.output.JsonStream;
@@ -11,6 +12,8 @@ import com.safetynet.alerts.repository.PersonRepository;
 
 @Service
 public class PersonService {
+	
+	@Autowired
 	private PersonRepository personRepository;
 	
 	public PersonService(PersonRepository personRepository) {

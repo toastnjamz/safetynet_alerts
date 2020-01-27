@@ -13,6 +13,7 @@ import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -22,21 +23,27 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 
 @RunWith(MockitoJUnitRunner.class)
-//@RunWith(SpringJUnit4ClassRunner.class)
 public class PersonServiceTest {
+	
+	@Mock
+	private PersonRepository personRepository;
 	
 	@InjectMocks
 	private PersonService personService;
 	
-	@Mock
-	private PersonRepository personRepositoryMock;
+//	private PersonRepository personRepository = new mock(PersonRepository.class);
+//	private PersonService personService = new PersonService(personRepository);
+	
+//	@Before
+//	public void setup() {
+//		MockitoAnnotations.initMocks(this);
+//	}
 	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
@@ -46,7 +53,7 @@ public class PersonServiceTest {
 		Person person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "94501",
 				"555-555-5555", "benegesserit@yahoo.com");
 		
-		when(personRepositoryMock.findAll()).thenReturn(Arrays.asList(person1, person2));
+		when(personRepository.findAll()).thenReturn(Arrays.asList(person1, person2));
 		
 		// act
 		String result = personService.getAllPersons();
@@ -54,7 +61,7 @@ public class PersonServiceTest {
 		// assert
 		assertThat(result, CoreMatchers.containsString("Duncan"));
 		assertThat(result, CoreMatchers.containsString("Jessica"));
-		assertEquals(2, personRepositoryMock.findAll().size());
+		assertEquals(2, personRepository.findAll().size());
 	}
 	
 	@Test
@@ -63,7 +70,7 @@ public class PersonServiceTest {
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
 		
-		when(personRepositoryMock.findPerson("Duncan", "Idaho")).thenReturn(person1);
+		when(personRepository.findPerson("Duncan", "Idaho")).thenReturn(person1);
 		
 		// act
 		String foundPerson = personService.getPersonByFirstLastName(person1.getFirstName(), person1.getLastName());
@@ -71,7 +78,7 @@ public class PersonServiceTest {
 		// assert
 		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
 		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
-		assertEquals(1, personRepositoryMock.findAll().size());
+		assertEquals(1, personRepository.findAll().size());
 	}
 	
 	@Test
@@ -80,14 +87,14 @@ public class PersonServiceTest {
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
 		
-		when(personRepositoryMock.createPerson(person1)).thenReturn(person1);
+		when(personRepository.createPerson(person1)).thenReturn(person1);
 		
 		// act
 		String personCreated = personService.createPerson(person1);
 		
 		// assert
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
-		assertEquals(1, personRepositoryMock.findAll().size());
+		assertEquals(1, personRepository.findAll().size());
 	}
 	
 	@Test
@@ -108,14 +115,14 @@ public class PersonServiceTest {
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
 		
-		when(personRepositoryMock.createPerson(person1)).thenReturn(person1);
+		when(personRepository.createPerson(person1)).thenReturn(person1);
 		
 		// act
 		String personCreated = personService.createPerson(person1);
 		
 		// assert
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
-		assertEquals(false, personRepositoryMock.findAll().isEmpty());
+		assertEquals(false, personRepository.findAll().isEmpty());
 	}
 	
 //	@Test
