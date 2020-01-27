@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +32,11 @@ import com.safetynet.alerts.service.PersonService;
 @RunWith(MockitoJUnitRunner.class)
 public class PersonServiceTest {
 	
-	@Mock
-	private PersonRepository personRepository;
-	
-	@InjectMocks
-	private PersonService personService;
+//	@Mock
+//	private PersonRepository personRepository;
+//	
+//	@InjectMocks
+//	private PersonService personService;
 	
 //	private PersonRepository personRepository = new mock(PersonRepository.class);
 //	private PersonService personService = new PersonService(personRepository);
@@ -44,6 +45,15 @@ public class PersonServiceTest {
 //	public void setup() {
 //		MockitoAnnotations.initMocks(this);
 //	}
+	
+	private PersonRepository personRepository;
+	private PersonService personService;
+	
+	@Before
+	public void setup() {
+		personRepository = mock(PersonRepository.class);
+		personService = new PersonService(personRepository);
+	}
 	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
