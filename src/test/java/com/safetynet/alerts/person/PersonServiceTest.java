@@ -35,11 +35,11 @@ import com.safetynet.alerts.service.PersonService;
 @RunWith(MockitoJUnitRunner.class)
 public class PersonServiceTest {
 	
-	@Mock
-	private PersonRepository personRepository;
-	
-	@InjectMocks
-	private PersonService personService;
+//	@Mock
+//	private PersonRepository personRepository;
+//	
+//	@InjectMocks
+//	private PersonService personService;
 	
 //	private PersonRepository personRepository = new mock(PersonRepository.class);
 //	private PersonService personService = new PersonService(personRepository);
@@ -60,16 +60,16 @@ public class PersonServiceTest {
 //		personService = new PersonService(personRepository);
 //	}
 	
-//	@Spy
-//	private JsonLoader jsonLoader;
+	@Spy
+	private JsonLoader jsonLoader;
+	
+	@Spy @InjectMocks
+	private PersonRepository personRepository = new PersonRepository(jsonLoader);
+//	private PersonRepository personRepository = spy(PersonRepository.class);
+//	private PersonRepository personRepository;
 //	
-//	@Spy @InjectMocks
-//	private PersonRepository personRepository = new PersonRepository(jsonLoader);
-////	private PersonRepository personRepository = spy(PersonRepository.class);
-////	private PersonRepository personRepository;
-//	
-//	@InjectMocks
-//	private PersonService personService;
+	@InjectMocks
+	private PersonService personService;
 	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
