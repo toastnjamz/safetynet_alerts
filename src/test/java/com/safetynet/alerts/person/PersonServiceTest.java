@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,21 +23,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.safetynet.alerts.domain.Person;
+import com.safetynet.alerts.jsonloader.JsonLoader;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonServiceTest {
 	
-//	@Mock
-//	private PersonRepository personRepository;
-//	
-//	@InjectMocks
-//	private PersonService personService;
+	@Mock
+	private PersonRepository personRepository;
+	
+	@InjectMocks
+	private PersonService personService;
 	
 //	private PersonRepository personRepository = new mock(PersonRepository.class);
 //	private PersonService personService = new PersonService(personRepository);
@@ -45,15 +48,28 @@ public class PersonServiceTest {
 //	public void setup() {
 //		MockitoAnnotations.initMocks(this);
 //	}
+//	
+//	private JsonLoader jsonLoader;
+//	private PersonRepository personRepository;
+//	private PersonService personService;
+//	
+//	@Before
+//	public void setup() {
+//		jsonLoader = mock(JsonLoader.class);
+//		personRepository = mock(PersonRepository.class);
+//		personService = new PersonService(personRepository);
+//	}
 	
-	private PersonRepository personRepository;
-	private PersonService personService;
-	
-	@Before
-	public void setup() {
-		personRepository = mock(PersonRepository.class);
-		personService = new PersonService(personRepository);
-	}
+//	@Spy
+//	private JsonLoader jsonLoader;
+//	
+//	@Spy @InjectMocks
+//	private PersonRepository personRepository = new PersonRepository(jsonLoader);
+////	private PersonRepository personRepository = spy(PersonRepository.class);
+////	private PersonRepository personRepository;
+//	
+//	@InjectMocks
+//	private PersonService personService;
 	
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
@@ -72,6 +88,7 @@ public class PersonServiceTest {
 		assertThat(result, CoreMatchers.containsString("Duncan"));
 		assertThat(result, CoreMatchers.containsString("Jessica"));
 		assertEquals(2, personRepository.findAll().size());
+		//verify(personRepository).findAll();
 	}
 	
 	@Test
