@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 
 import com.jsoniter.JsonIterator;
@@ -13,9 +15,11 @@ import com.jsoniter.any.Any;
 import com.safetynet.alerts.domain.Person;
 
 @Service
-public class JsonLoader {
+public class JsonLoader implements ApplicationEventPublisherAware {
 
 	private List<Person> personList = new ArrayList<Person>();
+	
+	private ApplicationEventPublisher publisher;
 	
 	// Constructor deserializes data from JSON file
 	public JsonLoader() throws IOException {
@@ -34,8 +38,16 @@ public class JsonLoader {
 				(p.get("zip").toString()),
 				(p.get("phone").toString()),
 				(p.get("email").toString()))));
+		
+		
+		publisher.publishEvent(new JsonLoaderEvent(this, "Loading JSON", this));
 	}
 		
+	@Override
+	public void setApplicationEventPublisher(ApplicationEventPublisher publisher) {
+		this.publisher = publisher;
+	}
+	
 	public List<Person> getPersons() {
 		return personList;
 	}

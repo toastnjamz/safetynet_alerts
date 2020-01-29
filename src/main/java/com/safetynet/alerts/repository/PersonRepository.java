@@ -4,20 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Repository;
 
 import com.safetynet.alerts.jsonloader.JsonLoader;
+import com.safetynet.alerts.jsonloader.JsonLoaderEvent;
 import com.safetynet.alerts.domain.Person;
 
 @Repository
-public class PersonRepository {
-	
-	private List<Person> personList;
+public class PersonRepository implements ApplicationListener<JsonLoaderEvent> {
 	
 	@Autowired
-	public PersonRepository(JsonLoader jsonLoader) {
-		this.personList = jsonLoader.getPersons();
+	private List<Person> personList;
+	
+	public void onApplicationEvent(JsonLoaderEvent event) {
+		JsonLoaderEvent jsonLoaderEvent = (JsonLoaderEvent) event;
+		personList = jsonLoaderEvent.getJsonLoader().getPersons();
 	}
+	
+//	@Autowired
+//	public PersonRepository(JsonLoader jsonLoader) {
+//		this.personList = jsonLoader.getPersons();
+//	}
+	
+	
 	
 	public List<Person> findAll() {
 		return personList;
