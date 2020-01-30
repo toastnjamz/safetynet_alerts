@@ -1,5 +1,8 @@
 package com.safetynet.alerts.repository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,23 +12,41 @@ import org.springframework.stereotype.Repository;
 
 import com.safetynet.alerts.jsonloader.JsonLoader;
 import com.safetynet.alerts.jsonloader.JsonLoaderEvent;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import com.safetynet.alerts.domain.Person;
 
 @Repository
-public class PersonRepository implements ApplicationListener<JsonLoaderEvent> {
+public class PersonRepository //implements ApplicationListener<JsonLoaderEvent> 
+{ 
 	
-	@Autowired
 	private List<Person> personList;
 	
 	public void onApplicationEvent(JsonLoaderEvent event) {
 		JsonLoaderEvent jsonLoaderEvent = (JsonLoaderEvent) event;
-		personList = jsonLoaderEvent.getJsonLoader().getPersons();
+		//personList = jsonLoaderEvent.getJsonLoader().getPersons();
 	}
 	
-//	@Autowired
-//	public PersonRepository(JsonLoader jsonLoader) {
-//		this.personList = jsonLoader.getPersons();
-//	}
+	public PersonRepository() {
+//		String jsonFilePath = "src/main/resources/data.json";
+//		byte[] byteArray;
+//		try {
+//			byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
+//			JsonIterator jsoniter = JsonIterator.parse(byteArray);
+//			Any any = jsoniter.readAny();
+//			Any anyPerson = any.get("persons");
+//			anyPerson.forEach(p -> personList.add(new Person(p.get("firstName").toString(),
+//					(p.get("lastName").toString()),
+//					(p.get("address").toString()),
+//					(p.get("city").toString()),
+//					(p.get("zip").toString()),
+//					(p.get("phone").toString()),
+//					(p.get("email").toString()))));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
 	
 	
 	

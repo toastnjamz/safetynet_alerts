@@ -12,13 +12,12 @@ import com.safetynet.alerts.repository.PersonRepository;
 
 @Service
 public class PersonService {
-	
 	//@Autowired
 	private PersonRepository personRepository;
 	
-	@Autowired
-	public PersonService(PersonRepository personRepository) {
-		this.personRepository = personRepository;
+	
+	public PersonService() {
+		//this.personRepository = personRepository;
 	}
 	
 	public String getAllPersons() {
