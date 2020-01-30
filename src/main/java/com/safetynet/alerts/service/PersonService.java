@@ -13,7 +13,6 @@ import com.safetynet.alerts.repository.PersonRepository;
 @Service
 public class PersonService {
 	
-	//@Autowired
 	private PersonRepository personRepository;
 	
 	@Autowired

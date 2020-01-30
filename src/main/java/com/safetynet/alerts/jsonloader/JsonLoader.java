@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.safetynet.alerts.domain.Person;
 @Service
 public class JsonLoader implements ApplicationEventPublisherAware {
 
+	@Autowired
 	private List<Person> personList = new ArrayList<Person>();
 	
 	private ApplicationEventPublisher publisher;
