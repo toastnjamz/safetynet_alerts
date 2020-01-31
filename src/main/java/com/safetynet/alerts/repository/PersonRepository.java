@@ -10,10 +10,10 @@ import com.safetynet.alerts.domain.Person;
 
 @Repository
 public class PersonRepository {
-	
-	@Autowired
+
 	private List<Person> personList;
 
+	@Autowired
 	public PersonRepository() {
 		this.personList = new ArrayList<>();
 	}
