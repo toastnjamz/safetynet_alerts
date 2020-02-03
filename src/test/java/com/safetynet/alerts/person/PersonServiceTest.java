@@ -40,6 +40,21 @@ public class PersonServiceTest {
 	
 	@InjectMocks
 	private PersonService personService;
+
+//	@Before
+//	public void setup() {
+//		personRepository = new PersonRepository();
+//		personService = new PersonService(personRepository);
+
+//		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+//				"94501", "555-555-5555", "duncan@gmail.com");
+//		Person person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "94501",
+//				"555-555-5555", "benegesserit@yahoo.com");
+//
+//		personService.createPerson(person1);
+//		personService.createPerson(person2);
+//
+//	}
 	
 //	private PersonRepository personRepository = new mock(PersonRepository.class);
 //	private PersonService personService = new PersonService(personRepository);
@@ -67,58 +82,111 @@ public class PersonServiceTest {
 //	private PersonRepository personRepository = new PersonRepository(jsonLoader);
 //	private PersonRepository personRepository = spy(PersonRepository.class);
 //	private PersonRepository personRepository;
-//	
-//	@InjectMocks
-//	private PersonService personService;
 	
+//	@Test
+//	public void getAllPersons_repositoryHasData_allDataReturned() {
+//		// arrange
+//		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+//				"94501", "555-555-5555", "duncan@gmail.com");
+//		Person person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "94501",
+//				"555-555-5555", "benegesserit@yahoo.com");
+//
+//		when(personRepository.findAll()).thenReturn(Arrays.asList(person1, person2));
+//
+//		// act
+//		String result = personService.getAllPersons();
+//
+//		// assert
+//		assertThat(result, CoreMatchers.containsString("Duncan"));
+//		assertThat(result, CoreMatchers.containsString("Jessica"));
+//		assertEquals(2, personRepository.findAll().size());
+//		//verify(personRepository).findAll();
+//	}
+
 	@Test
 	public void getAllPersons_repositoryHasData_allDataReturned() {
 		// arrange
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
-				"94501", "555-555-5555", "duncan@gmail.com");
+		"94501", "555-555-5555", "duncan@gmail.com");
 		Person person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "94501",
 				"555-555-5555", "benegesserit@yahoo.com");
-		
+
+		personRepository.createPerson(person1);
+		personRepository.createPerson(person2);
+
 		when(personRepository.findAll()).thenReturn(Arrays.asList(person1, person2));
-		
+
 		// act
 		String result = personService.getAllPersons();
-		
+
 		// assert
 		assertThat(result, CoreMatchers.containsString("Duncan"));
 		assertThat(result, CoreMatchers.containsString("Jessica"));
 		assertEquals(2, personRepository.findAll().size());
-		//verify(personRepository).findAll();
 	}
 	
+//	@Test
+//	public void getPersonByFirstLastName_repositoryHasData_personDataReturned() {
+//		// arrange
+//		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+//				"94501", "555-555-5555", "duncan@gmail.com");
+//
+//		when(personRepository.findPerson("Duncan", "Idaho")).thenReturn(person1);
+//
+//		// act
+//		String foundPerson = personService.getPersonByFirstLastName(person1.getFirstName(), person1.getLastName());
+//
+//		// assert
+//		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
+//		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
+//		assertEquals(1, personRepository.findAll().size());
+//	}
+
 	@Test
 	public void getPersonByFirstLastName_repositoryHasData_personDataReturned() {
 		// arrange
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
-		
+
+		personRepository.createPerson(person1);
+
 		when(personRepository.findPerson("Duncan", "Idaho")).thenReturn(person1);
-		
+
 		// act
-		String foundPerson = personService.getPersonByFirstLastName(person1.getFirstName(), person1.getLastName());
-		
+		String foundPerson = personService.getPersonByFirstLastName("Duncan", "Idaho");
+
 		// assert
-		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
-		assertThat(foundPerson, CoreMatchers.containsString("Duncan"));
+		assertThat(foundPerson, CoreMatchers.containsString("Giedi Prime"));
 		assertEquals(1, personRepository.findAll().size());
 	}
 	
+//	@Test
+//	public void createPerson_addingOnePerson_personDataReturned() {
+//		// arrange
+//		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
+//				"94501", "555-555-5555", "duncan@gmail.com");
+//
+//		when(personRepository.createPerson(person1)).thenReturn(person1);
+//
+//		// act
+//		String personCreated = personService.createPerson(person1);
+//
+//		// assert
+//		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
+//		assertEquals(1, personRepository.findAll().size());
+//	}
+
 	@Test
 	public void createPerson_addingOnePerson_personDataReturned() {
 		// arrange
 		Person person1 = new Person("Duncan", "Idaho", "123 Harkonnen Street", "Giedi Prime",
 				"94501", "555-555-5555", "duncan@gmail.com");
-		
+
 		when(personRepository.createPerson(person1)).thenReturn(person1);
-		
+
 		// act
 		String personCreated = personService.createPerson(person1);
-		
+
 		// assert
 		assertThat(personCreated, CoreMatchers.containsString("Duncan"));
 		assertEquals(1, personRepository.findAll().size());
