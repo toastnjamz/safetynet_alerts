@@ -18,11 +18,16 @@ import com.safetynet.alerts.exception.DuplicatePersonException;
 import com.safetynet.alerts.exception.PersonNotFoundException;
 import com.safetynet.alerts.service.PersonService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @RestController
 @RequestMapping("/person")
 public class PersonController {
 	
+	private static final Logger log = LoggerFactory.getLogger(PersonController.class);
+
 	private PersonService personService;
 	
 	@Autowired
@@ -32,6 +37,7 @@ public class PersonController {
 	
 	@GetMapping
 	public String getAllPersons() {
+		log.info("GET called for getAllPersons, SUCCESS");
 		return personService.getAllPersons();
 	}
 	
@@ -39,8 +45,10 @@ public class PersonController {
 	public String getPersonByFirstLastName(@PathVariable("firstName") String firstName,
 		@PathVariable("lastName") String lastName) {
 		try {
+			log.info("GET called for getPersonByFirstLastName, SUCCESS");
 			return personService.getPersonByFirstLastName(firstName, lastName);
 		} catch (PersonNotFoundException e) {
+			log.error("GET called for getPersonByFirstLastName, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
 	}
@@ -49,8 +57,10 @@ public class PersonController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@RequestBody Person person) {
 		try {
+			log.info("GET called for createPerson, SUCCESS");
 			return personService.createPerson(person);
 		} catch (DuplicatePersonException e) {
+			log.error("GET called for createPerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
 		}
 	}
@@ -60,8 +70,10 @@ public class PersonController {
 	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
 			@PathVariable("lastName") String lastName) {
 		try {
+			log.info("GET called for updatePerson, SUCCESS");
 			personService.updatePerson(person);
 		} catch (PersonNotFoundException e) {
+			log.error("GET called for updatePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
@@ -71,8 +83,10 @@ public class PersonController {
 	public void deletePerson(@PathVariable("firstName") String firstName, 
 			@PathVariable("lastName") String lastName) {
 		try {
+			log.info("GET called for deletePerson, SUCCESS");
 			personService.deletePerson(firstName, lastName);
 		} catch (PersonNotFoundException e) {
+			log.error("GET called for deletePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
