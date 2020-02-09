@@ -57,10 +57,10 @@ public class PersonController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@RequestBody Person person) {
 		try {
-			log.info("GET called for createPerson, SUCCESS");
+			log.info("POST called for createPerson, SUCCESS");
 			return personService.createPerson(person);
 		} catch (DuplicatePersonException e) {
-			log.error("GET called for createPerson, ERROR");
+			log.error("POST called for createPerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
 		}
 	}
@@ -70,10 +70,10 @@ public class PersonController {
 	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
 			@PathVariable("lastName") String lastName) {
 		try {
-			log.info("GET called for updatePerson, SUCCESS");
+			log.info("PUT called for updatePerson, SUCCESS");
 			personService.updatePerson(person);
 		} catch (PersonNotFoundException e) {
-			log.error("GET called for updatePerson, ERROR");
+			log.error("PUT called for updatePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
@@ -83,10 +83,10 @@ public class PersonController {
 	public void deletePerson(@PathVariable("firstName") String firstName, 
 			@PathVariable("lastName") String lastName) {
 		try {
-			log.info("GET called for deletePerson, SUCCESS");
+			log.info("DELETE called for deletePerson, SUCCESS");
 			personService.deletePerson(firstName, lastName);
 		} catch (PersonNotFoundException e) {
-			log.error("GET called for deletePerson, ERROR");
+			log.error("DELETE called for deletePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}

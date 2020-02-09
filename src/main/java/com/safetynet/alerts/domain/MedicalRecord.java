@@ -2,17 +2,26 @@ package com.safetynet.alerts.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MedicalRecord {
 	
 	private String firstName;
 	private String lastName;
 	private String birthdate;
-	private List<Medication> medications;
-	private ArrayList<Allergy> allergies;
-	
-	public MedicalRecord(String firstName, String lastName, String birthdate, 
-			List<Medication> medications, ArrayList<Allergy> allergies) {
+	private List<String> medications;
+	private List<String> allergies;
+
+	public MedicalRecord(String firstName, String lastName, String birthdate) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthdate = birthdate;
+		this.medications = new ArrayList<>();
+		this.allergies = new ArrayList<>();
+	}
+
+	public MedicalRecord(String firstName, String lastName, String birthdate,
+			List<String> medications, List<String> allergies) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthdate = birthdate;
@@ -36,19 +45,60 @@ public class MedicalRecord {
 		this.birthdate = birthdate;
 	}
 
-	public List<Medication> getMedications() {
+	public List<String> getMedications() {
 		return medications;
 	}
 
-	public void setMedications(List<Medication> medications) {
-		this.medications = medications;
+	public void setMedications(List<String> NewMedications) {
+		medications.clear();
+		medications.addAll(NewMedications);
 	}
 
-	public ArrayList<Allergy> getAllergies() {
+	public String getMedication(String medication) {
+		for (String medInList : medications) {
+			if (medInList.equals(medication)) {
+				return medInList;
+			}
+		}
+		return null;
+	}
+
+	public void setMedication(String medication) {
+		medications.add(medication);
+	}
+
+	public List<String> getAllergies() {
 		return allergies;
 	}
 
-	public void setAllergies(ArrayList<Allergy> allergies) {
-		this.allergies = allergies;
+	public void setAllergies(List<String> newAllergies) {
+		allergies.clear();
+		allergies.addAll(newAllergies);
+	}
+
+	public String getAllergy(String allergy) {
+		for (String allergyInList : allergies) {
+			if (allergyInList.equals(allergy)) {
+				return allergyInList;
+			}
+		}
+		return null;
+	}
+
+	public void setAllergy(String allergy) {
+		allergies.add(allergy);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || obj.getClass() != this.getClass()) return false;
+		MedicalRecord medicalRecord = (MedicalRecord) obj;
+		return (medicalRecord.firstName.equals(this.firstName) && (medicalRecord.lastName.equals(this.lastName)));
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstName, lastName);
 	}
 }

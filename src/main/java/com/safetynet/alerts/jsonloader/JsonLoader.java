@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.safetynet.alerts.domain.MedicalRecord;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -23,6 +25,9 @@ public class JsonLoader {
 	@Autowired
 	private PersonRepository personRepository;
 
+	@Autowired
+	private MedicalRecordRepository medicalRecordRepository;
+
 	@EventListener
 	public void onApplicationReadyEvent(ApplicationReadyEvent event) throws IOException {
 		String jsonFilePath = "src/main/resources/data.json";
@@ -32,6 +37,7 @@ public class JsonLoader {
 		JsonIterator jsoniter = JsonIterator.parse(byteArray);
 		// Any is a lazy container in Jsoniter that can hold different values
 		Any any = jsoniter.readAny();
+
 		Any anyPerson = any.get("persons");
 		anyPerson.forEach(p -> personRepository.createPerson(new Person(p.get("firstName").toString(),
 				(p.get("lastName").toString()),
@@ -40,5 +46,16 @@ public class JsonLoader {
 				(p.get("zip").toString()),
 				(p.get("phone").toString()),
 				(p.get("email").toString()))));
+
+		Any anyMedical = any.get("medicalrecords");
+		anyMedical.forEach(m -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(m.get("firstName").toString(),
+				(m.get("lastName").toString()),
+				(m.get("birthdate").toString()))));
+
+		Any anyMedications = any.get("medications");
+		anyMedications.forEach(m -> m.toString());
+
+		Any anyAllergies = any.get("allergies");
+		anyAllergies.forEach(a -> a.toString());
 	}
 }
