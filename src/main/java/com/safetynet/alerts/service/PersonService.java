@@ -43,7 +43,7 @@ public class PersonService {
 	public void updatePerson(Person person) throws PersonNotFoundException {
 		if (personRepository.findPerson(person.getFirstName(), person.getLastName()) == null) {
 			throw new PersonNotFoundException();
-			}
+		}
 		personRepository.updatePerson(person);
 	}
 	

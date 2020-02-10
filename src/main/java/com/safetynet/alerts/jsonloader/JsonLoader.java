@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.safetynet.alerts.domain.FireStation;
 import com.safetynet.alerts.domain.MedicalRecord;
+import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -27,6 +29,9 @@ public class JsonLoader {
 
 	@Autowired
 	private MedicalRecordRepository medicalRecordRepository;
+
+	@Autowired
+	private FireStationRepository fireStationRepository;
 
 	@EventListener
 	public void onApplicationReadyEvent(ApplicationReadyEvent event) throws IOException {
@@ -50,12 +55,20 @@ public class JsonLoader {
 		Any anyMedical = any.get("medicalrecords");
 		anyMedical.forEach(m -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(m.get("firstName").toString(),
 				(m.get("lastName").toString()),
+//				(m.get("birthdate").toString()),
 				(m.get("birthdate").toString()))));
+//				(m.get("medications").toString())),
+//				(m.get("allergies").asList())));
 
-		Any anyMedications = any.get("medications");
-		anyMedications.forEach(m -> m.toString());
+//		List<Any> anyMedications = (List<Any>) any.get("medications");
+//		List<Any> anyMedications = jsoniter.readAny().asList();
+//		anyMedications.forEach(m -> m.toString());
+//
+//		Any anyAllergies = any.get("allergies");
+//		anyAllergies.forEach(a -> a.toString());
 
-		Any anyAllergies = any.get("allergies");
-		anyAllergies.forEach(a -> a.toString());
+		Any anyFireStation = any.get("firestations");
+		anyFireStation.forEach(f -> fireStationRepository.createStation(new FireStation(f.get("address").toString(),
+				(f.get("station").toString()))));
 	}
 }
