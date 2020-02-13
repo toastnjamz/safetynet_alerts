@@ -49,5 +49,6 @@ public class FireStationService {
         if (fireStationRepository.findStation(address) == null) {
             throw new FireStationNotFoundException();
         }
+        fireStationRepository.deleteStation(address);
     }
 }

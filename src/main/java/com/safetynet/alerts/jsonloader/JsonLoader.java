@@ -3,9 +3,9 @@ package com.safetynet.alerts.jsonloader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.jsoniter.spi.TypeLiteral;
 import com.safetynet.alerts.domain.FireStation;
 import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.repository.FireStationRepository;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
@@ -52,20 +51,12 @@ public class JsonLoader {
 				(p.get("phone").toString()),
 				(p.get("email").toString()))));
 
-		Any anyMedical = any.get("medicalrecords");
-		anyMedical.forEach(m -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(m.get("firstName").toString(),
-				(m.get("lastName").toString()),
-//				(m.get("birthdate").toString()),
-				(m.get("birthdate").toString()))));
-//				(m.get("medications").toString())),
-//				(m.get("allergies").asList())));
-
-//		List<Any> anyMedications = (List<Any>) any.get("medications");
-//		List<Any> anyMedications = jsoniter.readAny().asList();
-//		anyMedications.forEach(m -> m.toString());
-//
-//		Any anyAllergies = any.get("allergies");
-//		anyAllergies.forEach(a -> a.toString());
+		Any medicalAny = any.get("medicalrecords");
+		medicalAny.forEach(medicalRecord -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(medicalRecord.get("firstName").toString(),
+				medicalRecord.get("lastName").toString(),
+				medicalRecord.get("birthdate").toString(),
+				medicalRecord.get("medications").as(new TypeLiteral<List<String>>(){}),
+				medicalRecord.get("allergies").as(new TypeLiteral<List<String>>(){}))));
 
 		Any anyFireStation = any.get("firestations");
 		anyFireStation.forEach(f -> fireStationRepository.createStation(new FireStation(f.get("address").toString(),

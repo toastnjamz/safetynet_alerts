@@ -1,15 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
@@ -23,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 
 @RestController
-@RequestMapping("/person")
 public class PersonController {
 	
 	private static final Logger log = LoggerFactory.getLogger(PersonController.class);
@@ -35,15 +26,16 @@ public class PersonController {
 		this.personService = personService;
 	}
 	
-	@GetMapping
+	@GetMapping("/person")
 	public String getAllPersons() {
-		log.info("GET called for getAllPersons, SUCCESS");
+		log.info("GET request made for getAllPersons");
 		return personService.getAllPersons();
 	}
 	
-	@GetMapping("/{firstName}/{lastName}")
+	@GetMapping("/person/{firstName}/{lastName}")
 	public String getPersonByFirstLastName(@PathVariable("firstName") String firstName,
 		@PathVariable("lastName") String lastName) {
+		log.info("GET request made for getPersonByFirstLastName: " + firstName + " " + lastName);
 		try {
 			log.info("GET called for getPersonByFirstLastName, SUCCESS");
 			return personService.getPersonByFirstLastName(firstName, lastName);
@@ -53,9 +45,10 @@ public class PersonController {
 		}
 	}
 	
-	@PostMapping
+	@PostMapping("/person")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@RequestBody Person person) {
+		log.info("POST request made for createPerson: " + person.getFirstName() + " " + person.getLastName());
 		try {
 			log.info("POST called for createPerson, SUCCESS");
 			return personService.createPerson(person);
@@ -65,10 +58,11 @@ public class PersonController {
 		}
 	}
 	
-	@PutMapping("/{firstName}/{lastName}")
+	@PutMapping("/person/{firstName}/{lastName}")
 	@ResponseStatus(HttpStatus.OK)
 	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
 			@PathVariable("lastName") String lastName) {
+		log.info("PUT request made for updatePerson: " + firstName + " " + lastName);
 		try {
 			log.info("PUT called for updatePerson, SUCCESS");
 			personService.updatePerson(person);
@@ -78,16 +72,44 @@ public class PersonController {
 		}
 	}
 	
-	@DeleteMapping("/{firstName}/{lastName}")
+	@DeleteMapping("/person/{firstName}/{lastName}")
 	@ResponseStatus(HttpStatus.OK)
 	public void deletePerson(@PathVariable("firstName") String firstName, 
 			@PathVariable("lastName") String lastName) {
+		log.info("DELETE request made for deletePerson: " + firstName + " " + lastName);
 		try {
 			log.info("DELETE called for deletePerson, SUCCESS");
 			personService.deletePerson(firstName, lastName);
 		} catch (PersonNotFoundException e) {
 			log.error("DELETE called for deletePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
+		}
+	}
+
+//	//TODO
+//	@GetMapping("/personInfo")
+//	public String getPersonInfo(@RequestParam("firstName") String firstName,
+//								@RequestParam("lastName") String lastName) {
+//		try {
+//			log.info("GET called getPersonInfo, SUCCESS");
+//			return personService.getPersonInfo(firstName, lastName);
+//		} catch (PersonNotFoundException e) {
+//			log.error("GET called for getPersonInfo, ERROR");
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
+//		}
+//	}
+
+	//TODO
+	@GetMapping("/communityEmail")
+	public String getPersonsEmailsByCity(@RequestParam("city") String city) {
+		log.info("GET request made for getPersonsEmailsByCity: " + city);
+		try {
+			log.info("GET called getPersonsEmailsByCity, SUCCESS");
+			return personService.getEmailsByCity(city);
+		} catch (PersonNotFoundException e) {
+			log.error("GET called for getPersonsEmailsByCity, ERROR");
+			//TODO is this ok to do, or do I need to create a new exception for city?
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found", e);
 		}
 	}
 }

@@ -22,32 +22,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 //@WebMvcTest(PersonController.class)
 //@WebMvcTest only loads controller beans to test handler methods
-@WebMvcTest
-//@AutoConfigureMockMvc
-//@SpringBootTest
-@RunWith(SpringRunner.class)
+//@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
+//@RunWith(SpringRunner.class)
 public class PersonControllerTest {
 
-    //Acts as a dummy web browser
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private WebApplicationContext webContext;
-
-    @MockBean
-    private PersonService personService;
-
-    @Before
-    public void setupMockMvc() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webContext).build();
-    }
-
-    @Test
-    public void getAllPerson_personsExist_returnsAllPersons() throws Exception {
+//    @Autowired
+//    private WebApplicationContext webContext;
+//
+//    @MockBean
+//    private PersonService personService;
+//
+//    @Before
+//    public void setupMockMvc() {
+//        mockMvc = MockMvcBuilders.webAppContextSetup(webContext).build();
+//    }
+//
+//    @Test
+//    public void getAllPerson_personsExist_returnsAllPersons() throws Exception {
 //        mockMvc.perform(get("/persons"))
 //                .andExpect(status().is2xxSuccessful())
 //                .andExpect(content().json("[{\"firstName\":\"John\",\"lastName\":\"Boyd\"}]"));
+//    }
+
+    @Test
+    public void getAllPerson_personsExist_returnsAllPersons() throws Exception {
+        this.mockMvc.perform(get("/persons")).
+                andExpect(status().isOk()).
+                andExpect(content().json("[{\"firstName\":\"John\",\"lastName\":\"Boyd\"}]"));
     }
 
     @Test

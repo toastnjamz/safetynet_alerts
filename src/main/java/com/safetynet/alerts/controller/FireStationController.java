@@ -27,12 +27,13 @@ public class FireStationController {
 
     @GetMapping
     public String getAllFireStations() {
-        log.info("GET called for getAllFireStations, SUCCESS");
+        log.info("GET request made for getAllFireStations");
         return fireStationService.getAllFireStations();
     }
 
     @GetMapping("/{address}")
     public String getFireStationByAddress(@PathVariable("address") String address) {
+        log.info("GET request made for getFireStationByAddress: " + address);
         try {
             log.info("GET called for getFireStationByAddress, SUCCESS");
             return fireStationService.getFireStationByAddress(address);
@@ -46,6 +47,7 @@ public class FireStationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createFireStation(@RequestBody FireStation fireStation) {
+        log.info("POST request made for createFireStation: " + fireStation.getAddress());
         try {
             log.info("POST called for createFireStation, SUCCESS");
             return fireStationService.createFireStation(fireStation);
@@ -59,6 +61,7 @@ public class FireStationController {
     @PutMapping("/{address}")
     @ResponseStatus(HttpStatus.OK)
     public void updateFireStation(@RequestBody FireStation fireStation, @PathVariable("address") String address) {
+        log.info("PUT request made for updateFireStation: " + address);
         try {
             log.info("PUT called for updateFireStation, SUCCESS");
             fireStationService.updateFireStation(fireStation);
@@ -71,6 +74,7 @@ public class FireStationController {
     @DeleteMapping("/{address}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFireStation(@PathVariable("address") String address) {
+        log.info("DELETE request made for deleteFireStation: " + address);
         try {
             log.info("DELETE called for deleteFireStation, SUCCESS");
             fireStationService.deleteFireStation(address);

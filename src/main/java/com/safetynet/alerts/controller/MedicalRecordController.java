@@ -28,13 +28,14 @@ public class MedicalRecordController {
 
     @GetMapping
     public String getAllMedicalRecords() {
-        log.info("GET called for getAllMedicalRecords, SUCCESS");
+        log.info("GET request made for getAllMedicalRecords");
         return medicalRecordService.getAllMedicalRecords();
     }
 
     @GetMapping("/{firstName}/{lastName}")
     public String getMedicalRecordByFirstLastName(@PathVariable("firstName") String firstName,
                                                   @PathVariable("lastName") String lastName) {
+        log.info("GET request made for getMedicalRecordByFirstLastName: " + firstName + " " + lastName);
         try {
             log.info("GET called for getMedicalRecordByFirstLastName, SUCCESS");
             return medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName);
@@ -48,6 +49,7 @@ public class MedicalRecordController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+        log.info("POST request made for createMedicalRecord: " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName());
         try {
             log.info("POST called for createMedicalRecord, SUCCESS");
             return medicalRecordService.createMedicalRecord(medicalRecord);
@@ -62,6 +64,7 @@ public class MedicalRecordController {
     @ResponseStatus(HttpStatus.OK)
     public void updateMedicalRecord(@RequestBody MedicalRecord medicalRecord, @PathVariable("firstName") String firstName,
                                     @PathVariable("lastName") String lastName) {
+        log.info("PUT request made for updateMedicalRecord: " + firstName + " " + lastName);
         try {
             log.info("PUT called for updateMedicalRecord, SUCCESS");
             medicalRecordService.updateMedicalRecord(medicalRecord);
@@ -76,6 +79,7 @@ public class MedicalRecordController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteMedicalRecord(@PathVariable("firstName") String firstName,
                                     @PathVariable("lastName") String lastName) {
+        log.info("DELETE request made for deleteMedicalRecord: " + firstName + " " + lastName);
         try {
             log.info("DELETE called for deleteMedicalRecord, SUCCESS");
             medicalRecordService.deleteMedicalRecord(firstName, lastName);

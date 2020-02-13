@@ -12,13 +12,13 @@ public class MedicalRecord {
 	private List<String> medications;
 	private List<String> allergies;
 
-	public MedicalRecord(String firstName, String lastName, String birthdate) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.birthdate = birthdate;
-		this.medications = new ArrayList<>();
-		this.allergies = new ArrayList<>();
-	}
+//	public MedicalRecord(String firstName, String lastName, String birthdate) {
+//		this.firstName = firstName;
+//		this.lastName = lastName;
+//		this.birthdate = birthdate;
+//		this.medications = new ArrayList<>();
+//		this.allergies = new ArrayList<>();
+//	}
 
 	public MedicalRecord(String firstName, String lastName, String birthdate,
 			List<String> medications, List<String> allergies) {
@@ -54,18 +54,18 @@ public class MedicalRecord {
 		medications.addAll(NewMedications);
 	}
 
-	public String getMedication(String medication) {
-		for (String medInList : medications) {
-			if (medInList.equals(medication)) {
-				return medInList;
-			}
-		}
-		return null;
-	}
-
-	public void setMedication(String medication) {
-		medications.add(medication);
-	}
+//	public String getMedication(String medication) {
+//		for (String medInList : medications) {
+//			if (medInList.equals(medication)) {
+//				return medInList;
+//			}
+//		}
+//		return null;
+//	}
+//
+//	public void setMedication(String medication) {
+//		medications.add(medication);
+//	}
 
 	public List<String> getAllergies() {
 		return allergies;
@@ -76,18 +76,18 @@ public class MedicalRecord {
 		allergies.addAll(newAllergies);
 	}
 
-	public String getAllergy(String allergy) {
-		for (String allergyInList : allergies) {
-			if (allergyInList.equals(allergy)) {
-				return allergyInList;
-			}
-		}
-		return null;
-	}
-
-	public void setAllergy(String allergy) {
-		allergies.add(allergy);
-	}
+//	public String getAllergy(String allergy) {
+//		for (String allergyInList : allergies) {
+//			if (allergyInList.equals(allergy)) {
+//				return allergyInList;
+//			}
+//		}
+//		return null;
+//	}
+//
+//	public void setAllergy(String allergy) {
+//		allergies.add(allergy);
+//	}
 
 	@Override
 	public boolean equals(Object obj) {
