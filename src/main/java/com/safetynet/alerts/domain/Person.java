@@ -1,18 +1,36 @@
 package com.safetynet.alerts.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Person {
 	
-	private final String firstName;
-	private final String lastName;
+	private String firstName;
+	private String lastName;
 	private String address;
 	private String city;
 	private String zip;
 	private String phone;
 	private String email;
-	
-	public Person(String firstName, String lastName, String address, String city, String zip, 
+	private String age;
+	private List<String> medications;
+	private List<String> allergies;
+
+	public Person() {
+		this.firstName = "";
+		this.lastName = "";
+		this.address = "";
+		this.city = "";
+		this.zip = "";
+		this.phone = "";
+		this.email = "";
+		this.age = "";
+		this.medications = new ArrayList<>();
+		this.allergies = new ArrayList<>();
+	}
+
+	public Person(String firstName, String lastName, String address, String city, String zip,
 			String phone, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -27,8 +45,16 @@ public class Person {
 		return firstName;
 	}
 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
 	public String getLastName() {
 		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getAddress() {
@@ -69,6 +95,30 @@ public class Person {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getAge() {
+		return this.age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	public List<String> getMedications() {
+		return this.medications;
+	}
+
+	public void setMedications(List<String> medications) {
+		this.medications = medications;
+	}
+
+	public List<String> getAllergies() {
+		return this.allergies;
+	}
+
+	public void setAllergies(List<String> allergies) {
+		this.allergies = allergies;
 	}
 	
 	@Override

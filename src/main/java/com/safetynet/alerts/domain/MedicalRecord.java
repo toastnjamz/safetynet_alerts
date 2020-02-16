@@ -12,14 +12,6 @@ public class MedicalRecord {
 	private List<String> medications;
 	private List<String> allergies;
 
-//	public MedicalRecord(String firstName, String lastName, String birthdate) {
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.birthdate = birthdate;
-//		this.medications = new ArrayList<>();
-//		this.allergies = new ArrayList<>();
-//	}
-
 	public MedicalRecord(String firstName, String lastName, String birthdate,
 			List<String> medications, List<String> allergies) {
 		this.firstName = firstName;

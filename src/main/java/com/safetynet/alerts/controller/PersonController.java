@@ -86,20 +86,20 @@ public class PersonController {
 		}
 	}
 
-//	//TODO
-//	@GetMapping("/personInfo")
-//	public String getPersonInfo(@RequestParam("firstName") String firstName,
-//								@RequestParam("lastName") String lastName) {
-//		try {
-//			log.info("GET called getPersonInfo, SUCCESS");
-//			return personService.getPersonInfo(firstName, lastName);
-//		} catch (PersonNotFoundException e) {
-//			log.error("GET called for getPersonInfo, ERROR");
-//			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
-//		}
-//	}
-
 	//TODO
+	@GetMapping("/personInfo")
+	public String getPersonInfo(@RequestParam("firstName") String firstName,
+								@RequestParam("lastName") String lastName) {
+		log.info("GET request made for getPersonInfo: " + firstName + " " + lastName);
+		try {
+			log.info("GET called getPersonInfo, SUCCESS");
+			return personService.getPersonInfo(firstName, lastName);
+		} catch (PersonNotFoundException e) {
+			log.error("GET called for getPersonInfo, ERROR");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
+		}
+	}
+
 	@GetMapping("/communityEmail")
 	public String getPersonsEmailsByCity(@RequestParam("city") String city) {
 		log.info("GET request made for getPersonsEmailsByCity: " + city);

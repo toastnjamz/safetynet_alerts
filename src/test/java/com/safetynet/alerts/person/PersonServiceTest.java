@@ -3,8 +3,10 @@ package com.safetynet.alerts.person;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.exception.DuplicatePersonException;
 import com.safetynet.alerts.exception.PersonNotFoundException;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,12 +21,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class PersonServiceTest {
 
 	private PersonRepository personRepository;
+	private MedicalRecordRepository medicalRecordRepository;
 	private PersonService personService;
 
 	@Before
 	public void setup() {
 		personRepository = new PersonRepository();
-		personService = new PersonService(personRepository);
+		medicalRecordRepository = new MedicalRecordRepository();
+		personService = new PersonService(personRepository, medicalRecordRepository);
 
 		Person person1 = new Person("Duncan", "Idaho", "123 Market Street", "Giedi Prime",
 				"12345", "555-555-5555", "duncan@gmail.com");
