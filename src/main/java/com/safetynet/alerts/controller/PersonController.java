@@ -86,7 +86,6 @@ public class PersonController {
 		}
 	}
 
-	//TODO
 	@GetMapping("/personInfo")
 	public String getPersonInfo(@RequestParam("firstName") String firstName,
 								@RequestParam("lastName") String lastName) {

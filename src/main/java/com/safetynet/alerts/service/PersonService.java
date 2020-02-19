@@ -33,12 +33,6 @@ public class PersonService {
 		this.personRepository = personRepository;
 		this.medicalRecordRepository = medicalRecordRepository;
 	}
-
-//	@Autowired
-//	public PersonService(PersonRepository personRepository) {
-//
-//		this.personRepository = personRepository;
-//	}
 	
 	public String getAllPersons() {
 		return JsonStream.serialize(personRepository.findAll());
@@ -101,6 +95,48 @@ public class PersonService {
 		foundPerson.setAllergies(medicalRecordRepository.findMedicalRecord(firstName, lastName).getAllergies());
 
 		return JsonStream.serialize(foundPerson);
+	}
+
+	//TODO: Remove if getPersonsAtAddresses() below can be used
+	public String getPersonsAtAddress(String address) {
+		List<Person> personList = new ArrayList<>();
+
+		if (personRepository.findAll().stream().anyMatch(p -> p.getAddress().equals(address))) {
+			personList = personRepository.findAll().stream().filter(p -> p.getAddress().equals(address)).collect(Collectors.toList());
+		}
+		return JsonStream.serialize(personList);
+	}
+
+	//TODO
+	public List<Person> getPersonsAtAddresses(List<String> addresses) {
+		List<Person> personList = new ArrayList<>();
+
+		for (String address : addresses) {
+			personList.addAll(personRepository.findAll().stream().filter(p -> p.getAddress().equals(address)).collect(Collectors.toList()));
+		}
+		return personList;
+	}
+
+	//TODO
+	public String getChildrenInList(List<Person> personList) {
+		int numChildren = 0;
+		for (Person person : personList) {
+			if (Integer.parseInt(person.getAge()) < 18) {
+				numChildren++;
+			}
+		}
+		return Integer.toString(numChildren);
+	}
+
+	//TODO
+	public String getAdultsInList(List<Person> personList) {
+		int numAdults = 0;
+		for (Person person : personList) {
+			if (Integer.parseInt(person.getAge()) >= 18) {
+				numAdults++;
+			}
+		}
+		return Integer.toString(numAdults);
 	}
 
 	public String getEmailsByCity(String city) {

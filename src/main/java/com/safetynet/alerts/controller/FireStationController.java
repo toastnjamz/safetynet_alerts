@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/firestation")
+//@RequestMapping("/firestation")
 public class FireStationController {
 
     private static final Logger log = LoggerFactory.getLogger(FireStationController.class);
@@ -25,13 +25,13 @@ public class FireStationController {
         this.fireStationService = fireStationService;
     }
 
-    @GetMapping
+    @GetMapping("/firestation")
     public String getAllFireStations() {
         log.info("GET request made for getAllFireStations");
         return fireStationService.getAllFireStations();
     }
 
-    @GetMapping("/{address}")
+    @GetMapping("/firestation/{address}")
     public String getFireStationByAddress(@PathVariable("address") String address) {
         log.info("GET request made for getFireStationByAddress: " + address);
         try {
@@ -44,7 +44,7 @@ public class FireStationController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/firestation")
     @ResponseStatus(HttpStatus.CREATED)
     public String createFireStation(@RequestBody FireStation fireStation) {
         log.info("POST request made for createFireStation: " + fireStation.getAddress());
@@ -58,7 +58,7 @@ public class FireStationController {
         }
     }
 
-    @PutMapping("/{address}")
+    @PutMapping("/firestation/{address}")
     @ResponseStatus(HttpStatus.OK)
     public void updateFireStation(@RequestBody FireStation fireStation, @PathVariable("address") String address) {
         log.info("PUT request made for updateFireStation: " + address);
@@ -71,7 +71,7 @@ public class FireStationController {
         }
     }
 
-    @DeleteMapping("/{address}")
+    @DeleteMapping("/firestation/{address}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFireStation(@PathVariable("address") String address) {
         log.info("DELETE request made for deleteFireStation: " + address);
@@ -82,6 +82,20 @@ public class FireStationController {
         catch (FireStationNotFoundException e) {
             log.error("DELETE called for deleteFireStation, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
+        }
+    }
+
+    //TODO
+    @GetMapping("/phoneAlert")
+    public String getPhoneNumbersByStation(@RequestParam("firestation") String stationNumber) {
+        log.info("GET request made for getPhoneNumbersByStation: " + stationNumber);
+        try {
+            log.info("GET called for getPhoneNumbersByStation, SUCCESS");
+            return fireStationService.getPhoneNumbersByStationNumber(stationNumber);
+        }
+        catch (FireStationNotFoundException e) {
+            log.error("GET called for getPhoneNumbersByStation, ERROR");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
         }
     }
 }
