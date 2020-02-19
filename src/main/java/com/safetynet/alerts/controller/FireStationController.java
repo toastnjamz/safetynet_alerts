@@ -1,8 +1,9 @@
 package com.safetynet.alerts.controller;
 
+import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.FireStation;
-import com.safetynet.alerts.exception.DuplicateFireStationException;
-import com.safetynet.alerts.exception.FireStationNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class FireStationController {
     @GetMapping("/firestation")
     public String getAllFireStations() {
         log.info("GET request made for getAllFireStations");
-        return fireStationService.getAllFireStations();
+        return JsonStream.serialize(fireStationService.getAllFireStations());
     }
 
     @GetMapping("/firestation/{address}")
@@ -36,9 +37,9 @@ public class FireStationController {
         log.info("GET request made for getFireStationByAddress: " + address);
         try {
             log.info("GET called for getFireStationByAddress, SUCCESS");
-            return fireStationService.getFireStationByAddress(address);
+            return JsonStream.serialize(fireStationService.getFireStationByAddress(address));
         }
-        catch (FireStationNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("GET called for getFireStationByAddress, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
         }
@@ -50,9 +51,9 @@ public class FireStationController {
         log.info("POST request made for createFireStation: " + fireStation.getAddress());
         try {
             log.info("POST called for createFireStation, SUCCESS");
-            return fireStationService.createFireStation(fireStation);
+            return JsonStream.serialize(fireStationService.createFireStation(fireStation));
         }
-        catch (DuplicateFireStationException e) {
+        catch (DuplicateException e) {
             log.error("POST called for createFireStation, ERROR");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Fire Station already exists", e);
         }
@@ -65,7 +66,7 @@ public class FireStationController {
         try {
             log.info("PUT called for updateFireStation, SUCCESS");
             fireStationService.updateFireStation(fireStation);
-        } catch (FireStationNotFoundException e) {
+        } catch (NotFoundException e) {
             log.error("PUT called for updateFireStation, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
         }
@@ -79,21 +80,20 @@ public class FireStationController {
             log.info("DELETE called for deleteFireStation, SUCCESS");
             fireStationService.deleteFireStation(address);
         }
-        catch (FireStationNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("DELETE called for deleteFireStation, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
         }
     }
 
-    //TODO
     @GetMapping("/phoneAlert")
     public String getPhoneNumbersByStation(@RequestParam("firestation") String stationNumber) {
         log.info("GET request made for getPhoneNumbersByStation: " + stationNumber);
         try {
             log.info("GET called for getPhoneNumbersByStation, SUCCESS");
-            return fireStationService.getPhoneNumbersByStationNumber(stationNumber);
+            return JsonStream.serialize(fireStationService.getPhoneNumbersByStationNumber(stationNumber));
         }
-        catch (FireStationNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("GET called for getPhoneNumbersByStation, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
         }

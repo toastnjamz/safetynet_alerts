@@ -1,13 +1,14 @@
 package com.safetynet.alerts.controller;
 
+import com.jsoniter.output.JsonStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import com.safetynet.alerts.domain.Person;
-import com.safetynet.alerts.exception.DuplicatePersonException;
-import com.safetynet.alerts.exception.PersonNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.PersonService;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class PersonController {
 	@GetMapping("/person")
 	public String getAllPersons() {
 		log.info("GET request made for getAllPersons");
-		return personService.getAllPersons();
+		return JsonStream.serialize(personService.getAllPersons());
 	}
 	
 	@GetMapping("/person/{firstName}/{lastName}")
@@ -38,8 +39,8 @@ public class PersonController {
 		log.info("GET request made for getPersonByFirstLastName: " + firstName + " " + lastName);
 		try {
 			log.info("GET called for getPersonByFirstLastName, SUCCESS");
-			return personService.getPersonByFirstLastName(firstName, lastName);
-		} catch (PersonNotFoundException e) {
+			return JsonStream.serialize(personService.getPersonByFirstLastName(firstName, lastName));
+		} catch (NotFoundException e) {
 			log.error("GET called for getPersonByFirstLastName, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
@@ -51,8 +52,8 @@ public class PersonController {
 		log.info("POST request made for createPerson: " + person.getFirstName() + " " + person.getLastName());
 		try {
 			log.info("POST called for createPerson, SUCCESS");
-			return personService.createPerson(person);
-		} catch (DuplicatePersonException e) {
+			return JsonStream.serialize(personService.createPerson(person));
+		} catch (DuplicateException e) {
 			log.error("POST called for createPerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
 		}
@@ -66,7 +67,7 @@ public class PersonController {
 		try {
 			log.info("PUT called for updatePerson, SUCCESS");
 			personService.updatePerson(person);
-		} catch (PersonNotFoundException e) {
+		} catch (NotFoundException e) {
 			log.error("PUT called for updatePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
@@ -80,7 +81,7 @@ public class PersonController {
 		try {
 			log.info("DELETE called for deletePerson, SUCCESS");
 			personService.deletePerson(firstName, lastName);
-		} catch (PersonNotFoundException e) {
+		} catch (NotFoundException e) {
 			log.error("DELETE called for deletePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
@@ -92,8 +93,8 @@ public class PersonController {
 		log.info("GET request made for getPersonInfo: " + firstName + " " + lastName);
 		try {
 			log.info("GET called getPersonInfo, SUCCESS");
-			return personService.getPersonInfo(firstName, lastName);
-		} catch (PersonNotFoundException e) {
+			return JsonStream.serialize(personService.getPersonInfo(firstName, lastName));
+		} catch (NotFoundException e) {
 			log.error("GET called for getPersonInfo, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
@@ -104,10 +105,9 @@ public class PersonController {
 		log.info("GET request made for getPersonsEmailsByCity: " + city);
 		try {
 			log.info("GET called getPersonsEmailsByCity, SUCCESS");
-			return personService.getEmailsByCity(city);
-		} catch (PersonNotFoundException e) {
+			return JsonStream.serialize(personService.getEmailsByCity(city));
+		} catch (NotFoundException e) {
 			log.error("GET called for getPersonsEmailsByCity, ERROR");
-			//TODO is this ok to do, or do I need to create a new exception for city?
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found", e);
 		}
 	}

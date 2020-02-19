@@ -1,8 +1,9 @@
 package com.safetynet.alerts.controller;
 
+import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.MedicalRecord;
-import com.safetynet.alerts.exception.DuplicateMedicalRecordException;
-import com.safetynet.alerts.exception.MedicalRecordNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -29,7 +29,7 @@ public class MedicalRecordController {
     @GetMapping
     public String getAllMedicalRecords() {
         log.info("GET request made for getAllMedicalRecords");
-        return medicalRecordService.getAllMedicalRecords();
+        return JsonStream.serialize(medicalRecordService.getAllMedicalRecords());
     }
 
     @GetMapping("/{firstName}/{lastName}")
@@ -38,9 +38,9 @@ public class MedicalRecordController {
         log.info("GET request made for getMedicalRecordByFirstLastName: " + firstName + " " + lastName);
         try {
             log.info("GET called for getMedicalRecordByFirstLastName, SUCCESS");
-            return medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName);
+            return JsonStream.serialize(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
         }
-        catch (MedicalRecordNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("GET called for getMedicalRecordByFirstLastName, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record not found", e);
         }
@@ -52,9 +52,9 @@ public class MedicalRecordController {
         log.info("POST request made for createMedicalRecord: " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName());
         try {
             log.info("POST called for createMedicalRecord, SUCCESS");
-            return medicalRecordService.createMedicalRecord(medicalRecord);
+            return JsonStream.serialize(medicalRecordService.createMedicalRecord(medicalRecord));
         }
-        catch (DuplicateMedicalRecordException e) {
+        catch (DuplicateException e) {
             log.error("POST called for createMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Medical Record already exists", e);
         }
@@ -69,7 +69,7 @@ public class MedicalRecordController {
             log.info("PUT called for updateMedicalRecord, SUCCESS");
             medicalRecordService.updateMedicalRecord(medicalRecord);
         }
-        catch (MedicalRecordNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("PUT called for updateMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
         }
@@ -84,7 +84,7 @@ public class MedicalRecordController {
             log.info("DELETE called for deleteMedicalRecord, SUCCESS");
             medicalRecordService.deleteMedicalRecord(firstName, lastName);
         }
-        catch (MedicalRecordNotFoundException e) {
+        catch (NotFoundException e) {
             log.error("DELETE called for deleteMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
         }

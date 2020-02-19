@@ -1,12 +1,13 @@
 package com.safetynet.alerts.service;
 
-import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.MedicalRecord;
-import com.safetynet.alerts.exception.DuplicateMedicalRecordException;
-import com.safetynet.alerts.exception.MedicalRecordNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MedicalRecordService {
@@ -18,36 +19,36 @@ public class MedicalRecordService {
         this.medicalRecordRepository = medicalRecordRepository;
     }
 
-    public String getAllMedicalRecords() {
-        return JsonStream.serialize(medicalRecordRepository.findAll());
+    public List<MedicalRecord> getAllMedicalRecords() {
+        return medicalRecordRepository.findAll();
     }
 
-    public String getMedicalRecordByFirstLastName(String firstName, String lastName) {
+    public MedicalRecord getMedicalRecordByFirstLastName(String firstName, String lastName) throws NotFoundException {
         if (medicalRecordRepository.findMedicalRecord(firstName, lastName) == null) {
-            throw new MedicalRecordNotFoundException();
+            throw new NotFoundException();
         }
-        return JsonStream.serialize(medicalRecordRepository.findMedicalRecord(firstName, lastName));
+        return medicalRecordRepository.findMedicalRecord(firstName, lastName);
     }
 
-    public String createMedicalRecord(MedicalRecord medicalRecord) throws DuplicateMedicalRecordException {
+    public MedicalRecord createMedicalRecord(MedicalRecord medicalRecord) throws DuplicateException {
         for (MedicalRecord medicalInList : medicalRecordRepository.findAll()) {
             if (medicalInList.equals(medicalRecord)) {
-                throw new DuplicateMedicalRecordException();
+                throw new DuplicateException();
             }
         }
-        return JsonStream.serialize(medicalRecordRepository.createMedicalRecord(medicalRecord));
+        return medicalRecordRepository.createMedicalRecord(medicalRecord);
     }
 
-    public void updateMedicalRecord(MedicalRecord medicalRecord) throws MedicalRecordNotFoundException {
+    public void updateMedicalRecord(MedicalRecord medicalRecord) throws NotFoundException {
         if (medicalRecordRepository.findMedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()) == null) {
-            throw new MedicalRecordNotFoundException();
+            throw new NotFoundException();
         }
         medicalRecordRepository.updateMedicalRecord(medicalRecord);
     }
 
-    public void deleteMedicalRecord(String firstName, String lastName) throws MedicalRecordNotFoundException {
+    public void deleteMedicalRecord(String firstName, String lastName) throws NotFoundException {
         if (medicalRecordRepository.findMedicalRecord(firstName, lastName) == null) {
-            throw new MedicalRecordNotFoundException();
+            throw new NotFoundException();
         }
         medicalRecordRepository.deleteMedicalRecord(firstName, lastName);
     }

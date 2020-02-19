@@ -1,10 +1,9 @@
 package com.safetynet.alerts.service;
 
-import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.FireStation;
 import com.safetynet.alerts.domain.Person;
-import com.safetynet.alerts.exception.DuplicateFireStationException;
-import com.safetynet.alerts.exception.FireStationNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,36 +24,36 @@ public class FireStationService {
         this.personService = personService;
     }
 
-    public String getAllFireStations() {
-        return JsonStream.serialize(fireStationRepository.findAll());
+    public List<FireStation> getAllFireStations() {
+        return fireStationRepository.findAll();
     }
 
-    public String getFireStationByAddress(String address) throws FireStationNotFoundException {
+    public FireStation getFireStationByAddress(String address) throws NotFoundException {
         if (fireStationRepository.findStation(address) == null) {
-            throw new FireStationNotFoundException();
+            throw new NotFoundException();
         }
-        return JsonStream.serialize(fireStationRepository.findStation(address));
+        return fireStationRepository.findStation(address);
     }
 
-    public String createFireStation(FireStation fireStation) throws DuplicateFireStationException {
+    public FireStation createFireStation(FireStation fireStation) throws DuplicateException {
         for (FireStation stationInList : fireStationRepository.findAll()) {
             if (stationInList.equals(fireStation)) {
-                throw new DuplicateFireStationException();
+                throw new DuplicateException();
             }
         }
-        return JsonStream.serialize(fireStationRepository.createStation(fireStation));
+        return fireStationRepository.createStation(fireStation);
     }
 
-    public void updateFireStation(FireStation fireStation) throws FireStationNotFoundException {
+    public void updateFireStation(FireStation fireStation) throws NotFoundException {
         if (fireStationRepository.findStation(fireStation.getAddress()) == null) {
-            throw new FireStationNotFoundException();
+            throw new NotFoundException();
         }
         fireStationRepository.updateStation(fireStation);
     }
 
-    public void deleteFireStation(String address) throws FireStationNotFoundException {
+    public void deleteFireStation(String address) throws NotFoundException {
         if (fireStationRepository.findStation(address) == null) {
-            throw new FireStationNotFoundException();
+            throw new NotFoundException();
         }
         fireStationRepository.deleteStation(address);
     }
@@ -73,7 +72,6 @@ public class FireStationService {
         return addressList;
     }
 
-    //TODO
     public List<Person> getPersonsByStationNumber(String stationNumber) {
         List<Person> personList = new ArrayList<>();
 
@@ -84,8 +82,7 @@ public class FireStationService {
         return personList;
     }
 
-    //TODO
-    public String getPhoneNumbersByStationNumber(String stationNumber) {
+    public List<String> getPhoneNumbersByStationNumber(String stationNumber) {
         List<String> phoneNumbers = new ArrayList<>();
 
         if (fireStationRepository.findAll().stream().anyMatch(f -> f.getStationNo().equals(stationNumber))) {
@@ -94,6 +91,6 @@ public class FireStationService {
                 phoneNumbers.add(personInList.getPhone());
             }
         }
-        return JsonStream.serialize(phoneNumbers);
+        return phoneNumbers;
     }
 }

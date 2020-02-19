@@ -1,13 +1,13 @@
 package com.safetynet.alerts.exception;
 
-public class PersonNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 	private String errorMessage;
 
-	public PersonNotFoundException() {}
+	public NotFoundException() {}
 	
-	public PersonNotFoundException(String errorMessage) {
+	public NotFoundException(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 	

@@ -1,15 +1,12 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.domain.MedicalRecord;
-import com.safetynet.alerts.exception.MedicalRecordNotFoundException;
-import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.Person;
-import com.safetynet.alerts.exception.DuplicatePersonException;
-import com.safetynet.alerts.exception.PersonNotFoundException;
+import com.safetynet.alerts.exception.DuplicateException;
+import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.PersonRepository;
 
 import java.time.LocalDate;
@@ -25,65 +22,65 @@ public class PersonService {
 	
 	private PersonRepository personRepository;
 
-	private MedicalRecordRepository medicalRecordRepository;
+	private MedicalRecordService medicalRecordService;
 	
 	@Autowired
-	public PersonService(PersonRepository personRepository, MedicalRecordRepository medicalRecordRepository) {
+	public PersonService(PersonRepository personRepository, MedicalRecordService medicalRecordService) {
 
 		this.personRepository = personRepository;
-		this.medicalRecordRepository = medicalRecordRepository;
+		this.medicalRecordService = medicalRecordService;
 	}
 	
-	public String getAllPersons() {
-		return JsonStream.serialize(personRepository.findAll());
+	public List<Person> getAllPersons() {
+		return personRepository.findAll();
 	}
 	
-	public String getPersonByFirstLastName(String firstName, String lastName) throws PersonNotFoundException {
+	public Person getPersonByFirstLastName(String firstName, String lastName) throws NotFoundException {
 		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new PersonNotFoundException();
+			throw new NotFoundException();
 		}
-		return JsonStream.serialize(personRepository.findPerson(firstName, lastName));
+		return personRepository.findPerson(firstName, lastName);
 	}
 	
-	public String createPerson(Person person) throws DuplicatePersonException {
+	public Person createPerson(Person person) throws DuplicateException {
 		for (Person personInList : personRepository.findAll()) {
 			if (personInList.equals(person)) {
-				throw new DuplicatePersonException();
+				throw new DuplicateException();
 			}
 		}
-		return JsonStream.serialize(personRepository.createPerson(person));
+		return personRepository.createPerson(person);
 	}
 	
-	public void updatePerson(Person person) throws PersonNotFoundException {
+	public void updatePerson(Person person) throws NotFoundException {
 		if (personRepository.findPerson(person.getFirstName(), person.getLastName()) == null) {
-			throw new PersonNotFoundException();
+			throw new NotFoundException();
 		}
 		personRepository.updatePerson(person);
 	}
 	
-	public void deletePerson(String firstName, String lastName) throws PersonNotFoundException {
+	public void deletePerson(String firstName, String lastName) throws NotFoundException {
 		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new PersonNotFoundException();
+			throw new NotFoundException();
 		}
 		personRepository.deletePerson(firstName, lastName);
 	}
 
-	public String getPersonAge(String firstName, String lastName) throws MedicalRecordNotFoundException {
+	public String getPersonAge(String firstName, String lastName) throws NotFoundException {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		LocalDate currentDate = LocalDate.now();
 
-		if (medicalRecordRepository.findMedicalRecord(firstName, lastName) == null) {
-			throw new MedicalRecordNotFoundException();
+		if (medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName) == null) {
+			throw new NotFoundException();
 		}
-		MedicalRecord foundRecord = medicalRecordRepository.findMedicalRecord(firstName, lastName);
+		MedicalRecord foundRecord = medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName);
 		LocalDate birthDate = LocalDate.parse(foundRecord.getBirthdate(), formatter);
 
 		return Integer.toString(Period.between(birthDate, currentDate).getYears());
 	}
 
-	public String getPersonInfo(String firstName, String lastName) throws PersonNotFoundException {
+	public Person getPersonInfo(String firstName, String lastName) throws NotFoundException {
 		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new PersonNotFoundException();
+			throw new NotFoundException();
 		}
 		Person foundPerson = personRepository.findPerson(firstName, lastName);
 		foundPerson.setFirstName(firstName);
@@ -91,23 +88,22 @@ public class PersonService {
 		foundPerson.setAddress(personRepository.findPerson(firstName, lastName).getAddress());
 		foundPerson.setEmail(personRepository.findPerson(firstName, lastName).getEmail());
 		foundPerson.setAge(getPersonAge(firstName, lastName));
-		foundPerson.setMedications(medicalRecordRepository.findMedicalRecord(firstName, lastName).getMedications());
-		foundPerson.setAllergies(medicalRecordRepository.findMedicalRecord(firstName, lastName).getAllergies());
+		foundPerson.setMedications(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getMedications());
+		foundPerson.setAllergies(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getAllergies());
 
-		return JsonStream.serialize(foundPerson);
+		return foundPerson;
 	}
 
 	//TODO: Remove if getPersonsAtAddresses() below can be used
-	public String getPersonsAtAddress(String address) {
+	public List<Person> getPersonsAtAddress(String address) {
 		List<Person> personList = new ArrayList<>();
 
 		if (personRepository.findAll().stream().anyMatch(p -> p.getAddress().equals(address))) {
 			personList = personRepository.findAll().stream().filter(p -> p.getAddress().equals(address)).collect(Collectors.toList());
 		}
-		return JsonStream.serialize(personList);
+		return personList;
 	}
 
-	//TODO
 	public List<Person> getPersonsAtAddresses(List<String> addresses) {
 		List<Person> personList = new ArrayList<>();
 
@@ -139,7 +135,7 @@ public class PersonService {
 		return Integer.toString(numAdults);
 	}
 
-	public String getEmailsByCity(String city) {
+	public List<String> getEmailsByCity(String city) {
 		List<String> emailList = new ArrayList<>();
 
 		if (personRepository.findAll().stream().anyMatch(p -> p.getCity().equals(city))) {
@@ -149,6 +145,6 @@ public class PersonService {
 				emailList.add(person.getEmail());
 			}
 		}
-		return JsonStream.serialize(emailList);
+		return emailList;
 	}
 }
