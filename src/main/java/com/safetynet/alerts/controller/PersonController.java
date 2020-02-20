@@ -27,7 +27,7 @@ public class PersonController {
 		this.personService = personService;
 	}
 	
-	@GetMapping("/person")
+	@GetMapping("/persons")
 	public String getAllPersons() {
 		log.info("GET request made for getAllPersons");
 		return JsonStream.serialize(personService.getAllPersons());

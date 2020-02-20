@@ -117,7 +117,7 @@ public class PersonService {
 	public String getChildrenInList(List<Person> personList) {
 		int numChildren = 0;
 		for (Person person : personList) {
-			if (Integer.parseInt(person.getAge()) < 18) {
+			if (Integer.parseInt(getPersonAge(person.getFirstName(), person.getLastName())) < 18) {
 				numChildren++;
 			}
 		}
@@ -128,7 +128,7 @@ public class PersonService {
 	public String getAdultsInList(List<Person> personList) {
 		int numAdults = 0;
 		for (Person person : personList) {
-			if (Integer.parseInt(person.getAge()) >= 18) {
+			if (Integer.parseInt(getPersonAge(person.getFirstName(), person.getLastName())) >= 18) {
 				numAdults++;
 			}
 		}

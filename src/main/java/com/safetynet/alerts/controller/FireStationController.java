@@ -26,7 +26,7 @@ public class FireStationController {
         this.fireStationService = fireStationService;
     }
 
-    @GetMapping("/firestation")
+    @GetMapping("/firestations")
     public String getAllFireStations() {
         log.info("GET request made for getAllFireStations");
         return JsonStream.serialize(fireStationService.getAllFireStations());
@@ -83,6 +83,20 @@ public class FireStationController {
         catch (NotFoundException e) {
             log.error("DELETE called for deleteFireStation, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
+        }
+    }
+
+    //TODO
+    @GetMapping("/firestation")
+    public String getPersonsByStation(@RequestParam("stationNumber") String stationNumber) {
+        log.info("GET request made for getPersonsByStation: " + stationNumber);
+        try {
+            log.info("GET called for getPersonsByStation, SUCCESS");
+            return JsonStream.serialize(fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber));
+        }
+        catch (NotFoundException e) {
+            log.error("GET called for getPersonsByStation, ERROR");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
         }
     }
 
