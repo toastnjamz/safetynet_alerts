@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-//@RequestMapping("/firestation")
 public class FireStationController {
 
     private static final Logger log = LoggerFactory.getLogger(FireStationController.class);
@@ -86,7 +85,6 @@ public class FireStationController {
         }
     }
 
-    //TODO
     @GetMapping("/firestation")
     public String getPersonsByStation(@RequestParam("stationNumber") String stationNumber) {
         log.info("GET request made for getPersonsByStation: " + stationNumber);

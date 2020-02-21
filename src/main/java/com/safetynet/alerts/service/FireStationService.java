@@ -1,12 +1,14 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.domain.FireStation;
+import com.safetynet.alerts.domain.PeopleServicedByStation;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.exception.DuplicateException;
 import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.FireStationRepository;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -86,6 +88,45 @@ public class FireStationService {
         return personList;
     }
 
+    public PeopleServicedByStation getListAdultsAndChildrenByStationNumber(String stationNumber) {
+        List<Person> personList = getPersonsByStationNumber(stationNumber);
+        List<String> formattedPersonList = new ArrayList<>();
+        PeopleServicedByStation peopleServicedByStationResult;
+
+        for (Person person : personList) {
+            formattedPersonList.add(person.getFirstName());
+            formattedPersonList.add(person.getLastName());
+            formattedPersonList.add(person.getAddress());
+            formattedPersonList.add(person.getPhone());
+        }
+
+        peopleServicedByStationResult = new PeopleServicedByStation(formattedPersonList,
+                personService.getAdultsInList(personList),
+                personService.getChildrenInList(personList));
+
+        return peopleServicedByStationResult;
+    }
+
+//    //Tuples are not a supported type in Jsoniter
+//    public Triplet<List<String>, String, String> getListAdultsAndChildrenByStationNumber(String stationNumber) {
+//        List<Person> personList = getPersonsByStationNumber(stationNumber);
+//        List<String> formattedPersonList = new ArrayList<>();
+//
+//        for (Person person : personList) {
+//            formattedPersonList.add(person.getFirstName());
+//            formattedPersonList.add(person.getLastName());
+//            formattedPersonList.add(person.getAddress());
+//            formattedPersonList.add(person.getPhone());
+//        }
+//
+//        Triplet<List<String>, String, String> personData = new Triplet<List<String>, String, String>(
+//                formattedPersonList,
+//                "Children: " + personService.getChildrenInList(personList),
+//                "Adults: " + personService.getAdultsInList(personList));
+//
+//        return personData;
+//    }
+
 //    //MultiValuedMap is not a supported type in Jsoniter
 //    public MultiValuedMap<String, String> getListAdultsAndChildrenByStationNumber(String stationNumber) {
 //        List<Person> personList = getPersonsByStationNumber(stationNumber);
@@ -103,49 +144,6 @@ public class FireStationService {
 //
 //        return personMap;
 //    }
-
-    public HashMap<String, List<String>> getListAdultsAndChildrenByStationNumber(String stationNumber) {
-        List<Person> personList = getPersonsByStationNumber(stationNumber);
-        HashMap<String, List<String>> personMap = new HashMap<>();
-
-        List<String> firstNamesList = new ArrayList<>();
-        for (Person person : personList) {
-            firstNamesList.add(person.getFirstName());
-        }
-
-        List<String> lastNamesList = new ArrayList<>();
-        for (Person person : personList) {
-            lastNamesList.add(person.getLastName());
-        }
-
-        List<String> addressList = new ArrayList<>();
-        for (Person person : personList) {
-            addressList.add(person.getAddress());
-        }
-
-        List<String> phoneList = new ArrayList<>();
-        for (Person person : personList) {
-            phoneList.add(person.getPhone());
-        }
-
-        for (Person person : personList) {
-            personMap.put("firstname", firstNamesList);
-            personMap.put("lastname", lastNamesList);
-            personMap.put("address", addressList);
-            personMap.put("phone", phoneList);
-        }
-
-        List<String> numChildrenList = new ArrayList<>();
-        numChildrenList.add(personService.getChildrenInList(personList));
-
-        List<String> numAdultsList = new ArrayList<>();
-        numAdultsList.add(personService.getAdultsInList(personList));
-
-        personMap.put("Children", numChildrenList);
-        personMap.put("Adults", numAdultsList);
-
-        return personMap;
-    }
 
     public List<String> getPhoneNumbersByStationNumber(String stationNumber) {
         List<String> phoneNumbers = new ArrayList<>();
