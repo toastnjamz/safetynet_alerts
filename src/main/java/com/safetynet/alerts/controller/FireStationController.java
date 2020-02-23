@@ -98,6 +98,20 @@ public class FireStationController {
         }
     }
 
+    //TODO
+    @GetMapping("/fire")
+    public String getStationAndPersonsByAddress(@RequestParam("address") String address) {
+        log.info("GET request made for getStationAndPersonsByAddress: " + address);
+        try {
+            log.info("GET called for getStationAndPersonsByAddress, SUCCESS");
+            return JsonStream.serialize(fireStationService.getStationAndPersonsByAddress(address));
+        }
+        catch (NotFoundException e) {
+            log.error("GET called for getStationAndPersonsByAddress, ERROR");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
+        }
+    }
+
     @GetMapping("/phoneAlert")
     public String getPhoneNumbersByStation(@RequestParam("firestation") String stationNumber) {
         log.info("GET request made for getPhoneNumbersByStation: " + stationNumber);

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,7 +114,40 @@ public class PersonService {
 		return personList;
 	}
 
-	//TODO
+	public List<Person> getChildrenAtAddress(String address) {
+		List<Person> initialPersonList;
+		List<Person> adultList = new ArrayList<>();
+		List<Person> childrenList = new ArrayList<>();
+		List<Person> resultPersonList = new ArrayList<>();
+
+		if (personRepository.findAll().stream().anyMatch(p -> p.getAddress().equals(address))) {
+			initialPersonList = getPersonsAtAddresses(Arrays.asList(address));
+		}
+		else {
+			throw new NotFoundException();
+		}
+
+		for (Person person : initialPersonList) {
+			Person formattedPerson = new Person(person.getFirstName(), person.getLastName(),
+					(getPersonAge(person.getFirstName(), person.getLastName())));
+
+			int age = Integer.parseInt(getPersonAge(person.getFirstName(), person.getLastName()));
+			if (age < 18) {
+				childrenList.add(formattedPerson);
+			} else {
+				adultList.add(formattedPerson);
+			}
+		}
+
+		if (!childrenList.isEmpty()) {
+			resultPersonList.addAll(childrenList);
+			resultPersonList.addAll(adultList);
+			return resultPersonList;
+		} else {
+			return childrenList;
+		}
+	}
+
 	public String getChildrenInList(List<Person> personList) {
 		int numChildren = 0;
 		for (Person person : personList) {
@@ -124,7 +158,6 @@ public class PersonService {
 		return Integer.toString(numChildren);
 	}
 
-	//TODO
 	public String getAdultsInList(List<Person> personList) {
 		int numAdults = 0;
 		for (Person person : personList) {

@@ -40,6 +40,22 @@ public class Person {
 		this.phone = phone;
 		this.email = email;
 	}
+
+	public Person(String firstName, String lastName, String age) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.age = age;
+	}
+
+	public Person(String firstName, String lastName, String phone, String age, List<String> medications,
+				  List<String> allergies) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.age = age;
+		this.medications = medications;
+		this.allergies = allergies;
+	}
 	
 	public String getFirstName() {
 		return firstName;

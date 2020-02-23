@@ -5,13 +5,13 @@ import java.util.Objects;
 
 // This is a special class designed to satsify the requirements of the project
 // Used for FireStationController method: firestation?stationNumber=<station_number>
-public class PeopleServicedByStation {
+public class AdultsAndChildrenServicedByStation {
 
     private List<String> formattedPersonList;
     private String numberOfAdults;
     private String numberOfChildren;
 
-    public PeopleServicedByStation(List<String> formattedPersonList, String numberOfAdults, String numberOfChildren) {
+    public AdultsAndChildrenServicedByStation(List<String> formattedPersonList, String numberOfAdults, String numberOfChildren) {
         this.formattedPersonList = formattedPersonList;
         this.numberOfAdults = numberOfAdults;
         this.numberOfChildren = numberOfChildren;
@@ -45,7 +45,7 @@ public class PeopleServicedByStation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PeopleServicedByStation that = (PeopleServicedByStation) o;
+        AdultsAndChildrenServicedByStation that = (AdultsAndChildrenServicedByStation) o;
         return formattedPersonList.equals(that.formattedPersonList) &&
                 numberOfChildren.equals(that.numberOfChildren) &&
                 numberOfAdults.equals(that.numberOfAdults);

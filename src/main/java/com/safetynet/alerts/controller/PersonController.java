@@ -100,6 +100,19 @@ public class PersonController {
 		}
 	}
 
+	@GetMapping("/childAlert")
+	public String getChildrenAtAddress(@RequestParam("address") String address) {
+		log.info("GET request made for getChildrenAtAddress: " + address);
+		try {
+			log.info("GET called for getChildrenAtAddress, SUCCESS");
+			return JsonStream.serialize(personService.getChildrenAtAddress(address));
+		}
+		catch (NotFoundException e) {
+			log.error("GET called for getChildrenAtAddress, ERROR");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
+		}
+	}
+
 	@GetMapping("/communityEmail")
 	public String getPersonsEmailsByCity(@RequestParam("city") String city) {
 		log.info("GET request made for getPersonsEmailsByCity: " + city);

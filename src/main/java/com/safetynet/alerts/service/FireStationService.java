@@ -1,17 +1,13 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.domain.FireStation;
-import com.safetynet.alerts.domain.PeopleServicedByStation;
+import com.safetynet.alerts.domain.AdultsAndChildrenServicedByStation;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.exception.DuplicateException;
 import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.FireStationRepository;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +19,14 @@ public class FireStationService {
 
     private FireStationRepository fireStationRepository;
     private PersonService personService;
+    private MedicalRecordService medicalRecordService;
 
     @Autowired
-    public FireStationService(FireStationRepository fireStationRepository, PersonService personService) {
+    public FireStationService(FireStationRepository fireStationRepository, PersonService personService,
+                              MedicalRecordService medicalRecordService) {
         this.fireStationRepository = fireStationRepository;
         this.personService = personService;
+        this.medicalRecordService = medicalRecordService;
     }
 
     public List<FireStation> getAllFireStations() {
@@ -88,10 +87,10 @@ public class FireStationService {
         return personList;
     }
 
-    public PeopleServicedByStation getListAdultsAndChildrenByStationNumber(String stationNumber) {
+    public AdultsAndChildrenServicedByStation getListAdultsAndChildrenByStationNumber(String stationNumber) {
         List<Person> personList = getPersonsByStationNumber(stationNumber);
         List<String> formattedPersonList = new ArrayList<>();
-        PeopleServicedByStation peopleServicedByStationResult;
+        AdultsAndChildrenServicedByStation adultsAndChildrenServicedByStation;
 
         for (Person person : personList) {
             formattedPersonList.add(person.getFirstName());
@@ -100,11 +99,11 @@ public class FireStationService {
             formattedPersonList.add(person.getPhone());
         }
 
-        peopleServicedByStationResult = new PeopleServicedByStation(formattedPersonList,
+        adultsAndChildrenServicedByStation = new AdultsAndChildrenServicedByStation(formattedPersonList,
                 personService.getAdultsInList(personList),
                 personService.getChildrenInList(personList));
 
-        return peopleServicedByStationResult;
+        return adultsAndChildrenServicedByStation;
     }
 
 //    //Tuples are not a supported type in Jsoniter
@@ -144,6 +143,27 @@ public class FireStationService {
 //
 //        return personMap;
 //    }
+
+    //TODO
+    public HashMap<String, List<Person>> getStationAndPersonsByAddress(String address) {
+        HashMap<String, List<Person>> resultsMap = new HashMap<>();
+        List<Person> formattedPersonList = new ArrayList<>();
+
+        if (fireStationRepository.findAll().stream().anyMatch(f -> f.getAddress().equals(address))) {
+            FireStation fireStation = fireStationRepository.findStation(address);
+            List<Person> initialPersonList = getPersonsByStationNumber(fireStation.getStationNo());
+
+            for (Person person : initialPersonList) {
+                Person formattedPerson = new Person(person.getFirstName(), person.getLastName(), person.getPhone(),
+                        personService.getPersonAge(person.getFirstName(), person.getLastName()),
+                        medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getMedications(),
+                        medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getAllergies());
+                formattedPersonList.add(formattedPerson);
+            }
+            resultsMap.put(fireStation.getStationNo(), formattedPersonList);
+        }
+        return resultsMap;
+    }
 
     public List<String> getPhoneNumbersByStationNumber(String stationNumber) {
         List<String> phoneNumbers = new ArrayList<>();
