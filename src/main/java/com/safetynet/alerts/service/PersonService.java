@@ -95,7 +95,6 @@ public class PersonService {
 		return foundPerson;
 	}
 
-	//TODO: Remove if getPersonsAtAddresses() below can be used
 	public List<Person> getPersonsAtAddress(String address) {
 		List<Person> personList = new ArrayList<>();
 
@@ -121,7 +120,7 @@ public class PersonService {
 		List<Person> resultPersonList = new ArrayList<>();
 
 		if (personRepository.findAll().stream().anyMatch(p -> p.getAddress().equals(address))) {
-			initialPersonList = getPersonsAtAddresses(Arrays.asList(address));
+			initialPersonList = getPersonsAtAddress(address);
 		}
 		else {
 			throw new NotFoundException();

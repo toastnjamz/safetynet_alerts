@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 public class FireStationController {
 
@@ -98,7 +101,6 @@ public class FireStationController {
         }
     }
 
-    //TODO
     @GetMapping("/fire")
     public String getStationAndPersonsByAddress(@RequestParam("address") String address) {
         log.info("GET request made for getStationAndPersonsByAddress: " + address);
@@ -109,6 +111,20 @@ public class FireStationController {
         catch (NotFoundException e) {
             log.error("GET called for getStationAndPersonsByAddress, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
+        }
+    }
+
+    //TODO
+    @GetMapping("/flood/stations")
+    public String getHouseholdsByStationList(@RequestParam List<String> stations) {
+        log.info("GET request made for getHouseholdsByStationList: " + Arrays.toString(stations.toArray()));
+        try {
+            log.info("GET called for getHouseholdsByStationList, SUCCESS");
+            return JsonStream.serialize(fireStationService.getHouseholdsByStationList(stations));
+        }
+        catch (NotFoundException e) {
+            log.error("GET called for getHouseholdsByStationList, ERROR");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station(s) not found", e);
         }
     }
 

@@ -106,7 +106,7 @@ public class FireStationService {
         return adultsAndChildrenServicedByStation;
     }
 
-//    //Tuples are not a supported type in Jsoniter
+//    //Tuples are not supported in Jsoniter (cannot serialize)
 //    public Triplet<List<String>, String, String> getListAdultsAndChildrenByStationNumber(String stationNumber) {
 //        List<Person> personList = getPersonsByStationNumber(stationNumber);
 //        List<String> formattedPersonList = new ArrayList<>();
@@ -126,7 +126,7 @@ public class FireStationService {
 //        return personData;
 //    }
 
-//    //MultiValuedMap is not a supported type in Jsoniter
+//    //MultiValuedMap is not a supported type in Jsoniter (? not supported)
 //    public MultiValuedMap<String, String> getListAdultsAndChildrenByStationNumber(String stationNumber) {
 //        List<Person> personList = getPersonsByStationNumber(stationNumber);
 //        MultiValuedMap<String, String> personMap = new ArrayListValuedHashMap<>();
@@ -144,7 +144,6 @@ public class FireStationService {
 //        return personMap;
 //    }
 
-    //TODO
     public HashMap<String, List<Person>> getStationAndPersonsByAddress(String address) {
         HashMap<String, List<Person>> resultsMap = new HashMap<>();
         List<Person> formattedPersonList = new ArrayList<>();
@@ -161,6 +160,38 @@ public class FireStationService {
                 formattedPersonList.add(formattedPerson);
             }
             resultsMap.put(fireStation.getStationNo(), formattedPersonList);
+        }
+        return resultsMap;
+    }
+
+    //TODO: figure out why all people are added for each address
+    public HashMap<String, List<Person>> getHouseholdsByStationList(List<String> stationNumberList) {
+        HashMap<String, List<Person>> resultsMap = new HashMap<>();
+        List<String> addressList;
+        List<Person> initialPersonList;
+        List<Person> formattedPersonList = new ArrayList<>();
+
+        for (String stationNumber : stationNumberList) {
+            if (fireStationRepository.findAll().stream().anyMatch(f -> f.getStationNo().equals(stationNumber))) {
+
+                for (String stationNo : stationNumberList) {
+                    addressList = getAddressesByStationNumber(stationNo);
+
+                    for (String address : addressList) {
+                        //formattedPersonList.clear(); //Doesn't work - only displays last people to be added to formattedPersonList for all addresses
+                        initialPersonList = personService.getPersonsAtAddress(address);
+
+                        for (Person person : initialPersonList) {
+                            Person formattedPerson = new Person(person.getFirstName(), person.getLastName(), person.getPhone(),
+                                    personService.getPersonAge(person.getFirstName(), person.getLastName()),
+                                    medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getMedications(),
+                                    medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getAllergies());
+                            formattedPersonList.add(formattedPerson);
+                        }
+                        resultsMap.put("Firestation Number: " + stationNo + " , Address: " + address, formattedPersonList);
+                    }
+                }
+            }
         }
         return resultsMap;
     }
