@@ -10,6 +10,8 @@ import com.safetynet.alerts.domain.FireStation;
 import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -23,6 +25,8 @@ import com.safetynet.alerts.repository.PersonRepository;
 @Component
 public class JsonLoader {
 
+	private static final Logger log = LoggerFactory.getLogger(JsonLoader.class);
+
 	@Autowired
 	private PersonRepository personRepository;
 
@@ -33,33 +37,46 @@ public class JsonLoader {
 	private FireStationRepository fireStationRepository;
 
 	@EventListener
-	public void onApplicationReadyEvent(ApplicationReadyEvent event) throws IOException {
-		String jsonFilePath = "src/main/resources/data.json";
-		byte[] byteArray;
-		byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
+	public void onApplicationReadyEvent(ApplicationReadyEvent event) {
+		try {
+			String jsonFilePath = "src/main/resources/data.json";
+			byte[] byteArray;
+			byteArray = Files.readAllBytes(new File(jsonFilePath).toPath());
 
-		JsonIterator jsoniter = JsonIterator.parse(byteArray);
-		// Any is a lazy container in Jsoniter that can hold different values
-		Any any = jsoniter.readAny();
+			JsonIterator jsoniter = JsonIterator.parse(byteArray);
+			// Any is a lazy container in Jsoniter that can hold different values
+			Any any = jsoniter.readAny();
 
-		Any anyPerson = any.get("persons");
-		anyPerson.forEach(p -> personRepository.createPerson(new Person(p.get("firstName").toString(),
-				(p.get("lastName").toString()),
-				(p.get("address").toString()),
-				(p.get("city").toString()),
-				(p.get("zip").toString()),
-				(p.get("phone").toString()),
-				(p.get("email").toString()))));
+			Any anyPerson = any.get("persons");
+			anyPerson.forEach(p -> personRepository.createPerson(new Person(p.get("firstName").toString(),
+					(p.get("lastName").toString()),
+					(p.get("address").toString()),
+					(p.get("city").toString()),
+					(p.get("zip").toString()),
+					(p.get("phone").toString()),
+					(p.get("email").toString()))));
 
-		Any medicalAny = any.get("medicalrecords");
-		medicalAny.forEach(medicalRecord -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(medicalRecord.get("firstName").toString(),
-				medicalRecord.get("lastName").toString(),
-				medicalRecord.get("birthdate").toString(),
-				medicalRecord.get("medications").as(new TypeLiteral<List<String>>(){}),
-				medicalRecord.get("allergies").as(new TypeLiteral<List<String>>(){}))));
+			//TODO: how to see this output?
+			log.debug("Persons loaded from JSON file");
 
-		Any anyFireStation = any.get("firestations");
-		anyFireStation.forEach(f -> fireStationRepository.createStation(new FireStation(f.get("address").toString(),
-				(f.get("station").toString()))));
+			Any medicalAny = any.get("medicalrecords");
+			medicalAny.forEach(medicalRecord -> medicalRecordRepository.createMedicalRecord(new MedicalRecord(medicalRecord.get("firstName").toString(),
+					medicalRecord.get("lastName").toString(),
+					medicalRecord.get("birthdate").toString(),
+					medicalRecord.get("medications").as(new TypeLiteral<List<String>>(){}),
+					medicalRecord.get("allergies").as(new TypeLiteral<List<String>>(){}))));
+
+			log.debug("Medical Records loaded from JSON file");
+
+			Any anyFireStation = any.get("firestations");
+			anyFireStation.forEach(f -> fireStationRepository.createStation(new FireStation(f.get("address").toString(),
+					(f.get("station").toString()))));
+
+			log.debug("Fire Stations loaded from JSON file");
+
+		}
+		catch (IOException e) {
+			log.error("ERROR loading JSON file");
+		}
 	}
 }

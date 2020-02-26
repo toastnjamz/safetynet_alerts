@@ -2,6 +2,7 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.domain.FireStation;
 import com.safetynet.alerts.domain.AdultsAndChildrenServicedByStation;
+import com.safetynet.alerts.domain.Household;
 import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.exception.DuplicateException;
 import com.safetynet.alerts.exception.NotFoundException;
@@ -63,7 +64,7 @@ public class FireStationService {
         fireStationRepository.deleteStation(address);
     }
 
-    //TODO
+    //TODO: remove
     public List<String> getAddressesByStationNumber(String stationNumber) {
         List<String> addressList = new ArrayList<>();
         List<FireStation> stationList = fireStationRepository.findAll().stream().filter(f -> f.getStationNo().equals(stationNumber)).collect(Collectors.toList());
@@ -106,6 +107,7 @@ public class FireStationService {
         return adultsAndChildrenServicedByStation;
     }
 
+    //TODO: remove
 //    //Tuples are not supported in Jsoniter (cannot serialize)
 //    public Triplet<List<String>, String, String> getListAdultsAndChildrenByStationNumber(String stationNumber) {
 //        List<Person> personList = getPersonsByStationNumber(stationNumber);
@@ -164,36 +166,33 @@ public class FireStationService {
         return resultsMap;
     }
 
-    //TODO: figure out why all people are added for each address
-    public HashMap<String, List<Person>> getHouseholdsByStationList(List<String> stationNumberList) {
-        HashMap<String, List<Person>> resultsMap = new HashMap<>();
-        List<String> addressList;
-        List<Person> initialPersonList;
-        List<Person> formattedPersonList = new ArrayList<>();
+    public List<Household> getHouseholdsByStationList(List<String> stationNumberList) {
+        List<Household> householdList = new ArrayList<>();
 
         for (String stationNumber : stationNumberList) {
             if (fireStationRepository.findAll().stream().anyMatch(f -> f.getStationNo().equals(stationNumber))) {
+                List<String> addressList = getAddressesByStationNumber(stationNumber);
 
-                for (String stationNo : stationNumberList) {
-                    addressList = getAddressesByStationNumber(stationNo);
+                for (String address : addressList) {
+                    List<Person> initialPersonList = personService.getPersonsAtAddress(address);
+                    List<Person> formattedPersonList = new ArrayList<>();
 
-                    for (String address : addressList) {
-                        //formattedPersonList.clear(); //Doesn't work - only displays last people to be added to formattedPersonList for all addresses
-                        initialPersonList = personService.getPersonsAtAddress(address);
-
-                        for (Person person : initialPersonList) {
-                            Person formattedPerson = new Person(person.getFirstName(), person.getLastName(), person.getPhone(),
-                                    personService.getPersonAge(person.getFirstName(), person.getLastName()),
-                                    medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getMedications(),
-                                    medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getAllergies());
-                            formattedPersonList.add(formattedPerson);
-                        }
-                        resultsMap.put("Firestation Number: " + stationNo + " , Address: " + address, formattedPersonList);
+                    for (Person person : initialPersonList) {
+                        Person formattedPerson = new Person (
+                            person.getFirstName(),
+                            person.getLastName(),
+                            person.getPhone(),
+                            personService.getPersonAge(person.getFirstName(), person.getLastName()),
+                            medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getMedications(),
+                            medicalRecordService.getMedicalRecordByFirstLastName(person.getFirstName(), person.getLastName()).getAllergies());
+                        formattedPersonList.add(formattedPerson);
                     }
+                    Household household = new Household(address, formattedPersonList);
+                    householdList.add(household);
                 }
             }
         }
-        return resultsMap;
+        return householdList;
     }
 
     public List<String> getPhoneNumbersByStationNumber(String stationNumber) {

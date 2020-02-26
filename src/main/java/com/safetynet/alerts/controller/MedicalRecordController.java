@@ -28,20 +28,20 @@ public class MedicalRecordController {
 
     @GetMapping
     public String getAllMedicalRecords() {
-        log.info("GET request made for getAllMedicalRecords");
+        log.info("HTTP GET request received for getAllMedicalRecords");
         return JsonStream.serialize(medicalRecordService.getAllMedicalRecords());
     }
 
     @GetMapping("/{firstName}/{lastName}")
     public String getMedicalRecordByFirstLastName(@PathVariable("firstName") String firstName,
                                                   @PathVariable("lastName") String lastName) {
-        log.info("GET request made for getMedicalRecordByFirstLastName: " + firstName + " " + lastName);
+        log.info("HTTP GET request received for getMedicalRecordByFirstLastName: {} {}", firstName, lastName);
         try {
-            log.info("GET called for getMedicalRecordByFirstLastName, SUCCESS");
+            log.info("HTTP GET request received for getMedicalRecordByFirstLastName, SUCCESS");
             return JsonStream.serialize(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
         }
         catch (NotFoundException e) {
-            log.error("GET called for getMedicalRecordByFirstLastName, ERROR");
+            log.error("HTTP GET request received for getMedicalRecordByFirstLastName, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record not found", e);
         }
     }
@@ -49,13 +49,13 @@ public class MedicalRecordController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
-        log.info("POST request made for createMedicalRecord: " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName());
+        log.info("HTTP POST request received for createMedicalRecord: {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
         try {
-            log.info("POST called for createMedicalRecord, SUCCESS");
+            log.info("HTTP POST request received for createMedicalRecord, SUCCESS");
             return JsonStream.serialize(medicalRecordService.createMedicalRecord(medicalRecord));
         }
         catch (DuplicateException e) {
-            log.error("POST called for createMedicalRecord, ERROR");
+            log.error("HTTP POST request received for createMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Medical Record already exists", e);
         }
     }
@@ -64,13 +64,13 @@ public class MedicalRecordController {
     @ResponseStatus(HttpStatus.OK)
     public void updateMedicalRecord(@RequestBody MedicalRecord medicalRecord, @PathVariable("firstName") String firstName,
                                     @PathVariable("lastName") String lastName) {
-        log.info("PUT request made for updateMedicalRecord: " + firstName + " " + lastName);
+        log.info("HTTP PUT request received for updateMedicalRecord: {} {}", firstName, lastName);
         try {
-            log.info("PUT called for updateMedicalRecord, SUCCESS");
+            log.info("HTTP PUT request received for updateMedicalRecord, SUCCESS");
             medicalRecordService.updateMedicalRecord(medicalRecord);
         }
         catch (NotFoundException e) {
-            log.error("PUT called for updateMedicalRecord, ERROR");
+            log.error("HTTP PUT request received for updateMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
         }
     }
@@ -79,13 +79,13 @@ public class MedicalRecordController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteMedicalRecord(@PathVariable("firstName") String firstName,
                                     @PathVariable("lastName") String lastName) {
-        log.info("DELETE request made for deleteMedicalRecord: " + firstName + " " + lastName);
+        log.info("HTTP DELETE request received for deleteMedicalRecord: {} {}", firstName, lastName);
         try {
-            log.info("DELETE called for deleteMedicalRecord, SUCCESS");
+            log.info("HTTP DELETE request received for deleteMedicalRecord, SUCCESS");
             medicalRecordService.deleteMedicalRecord(firstName, lastName);
         }
         catch (NotFoundException e) {
-            log.error("DELETE called for deleteMedicalRecord, ERROR");
+            log.error("HTTP DELETE request received for deleteMedicalRecord, ERROR");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
         }
     }

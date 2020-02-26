@@ -46,6 +46,7 @@ public class MedicalRecord {
 		medications.addAll(NewMedications);
 	}
 
+	//TODO: Remove unused methods
 //	public String getMedication(String medication) {
 //		for (String medInList : medications) {
 //			if (medInList.equals(medication)) {

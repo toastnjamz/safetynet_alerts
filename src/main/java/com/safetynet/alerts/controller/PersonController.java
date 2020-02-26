@@ -29,19 +29,19 @@ public class PersonController {
 	
 	@GetMapping("/persons")
 	public String getAllPersons() {
-		log.info("GET request made for getAllPersons");
+		log.info("HTTP GET request received for getAllPersons");
 		return JsonStream.serialize(personService.getAllPersons());
 	}
 	
 	@GetMapping("/person/{firstName}/{lastName}")
 	public String getPersonByFirstLastName(@PathVariable("firstName") String firstName,
 		@PathVariable("lastName") String lastName) {
-		log.info("GET request made for getPersonByFirstLastName: " + firstName + " " + lastName);
+		log.info("HTTP GET request received for getPersonByFirstLastName: {} {}", firstName, lastName);
 		try {
-			log.info("GET called for getPersonByFirstLastName, SUCCESS");
+			log.info("HTTP GET request received for getPersonByFirstLastName, SUCCESS");
 			return JsonStream.serialize(personService.getPersonByFirstLastName(firstName, lastName));
 		} catch (NotFoundException e) {
-			log.error("GET called for getPersonByFirstLastName, ERROR");
+			log.error("HTTP GET request received for getPersonByFirstLastName, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
 	}
@@ -49,12 +49,12 @@ public class PersonController {
 	@PostMapping("/person")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String createPerson(@RequestBody Person person) {
-		log.info("POST request made for createPerson: " + person.getFirstName() + " " + person.getLastName());
+		log.info("HTTP POST request received for createPerson: {} {}", person.getFirstName(), person.getLastName());
 		try {
-			log.info("POST called for createPerson, SUCCESS");
+			log.info("HTTP POST request received for createPerson, SUCCESS");
 			return JsonStream.serialize(personService.createPerson(person));
 		} catch (DuplicateException e) {
-			log.error("POST called for createPerson, ERROR");
+			log.error("HTTP POST request received for createPerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
 		}
 	}
@@ -63,12 +63,12 @@ public class PersonController {
 	@ResponseStatus(HttpStatus.OK)
 	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
 			@PathVariable("lastName") String lastName) {
-		log.info("PUT request made for updatePerson: " + firstName + " " + lastName);
+		log.info("HTTP PUT request received for updatePerson: {} {}", firstName, lastName);
 		try {
-			log.info("PUT called for updatePerson, SUCCESS");
+			log.info("HTTP PUT request received for updatePerson, SUCCESS");
 			personService.updatePerson(person);
 		} catch (NotFoundException e) {
-			log.error("PUT called for updatePerson, ERROR");
+			log.error("HTTP PUT request received for updatePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
@@ -77,12 +77,12 @@ public class PersonController {
 	@ResponseStatus(HttpStatus.OK)
 	public void deletePerson(@PathVariable("firstName") String firstName, 
 			@PathVariable("lastName") String lastName) {
-		log.info("DELETE request made for deletePerson: " + firstName + " " + lastName);
+		log.info("HTTP DELETE request received for deletePerson: {} {}", firstName, lastName);
 		try {
-			log.info("DELETE called for deletePerson, SUCCESS");
+			log.info("HTTP DELETE request received for deletePerson, SUCCESS");
 			personService.deletePerson(firstName, lastName);
 		} catch (NotFoundException e) {
-			log.error("DELETE called for deletePerson, ERROR");
+			log.error("HTTP DELETE request received for deletePerson, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
 		}
 	}
@@ -90,37 +90,37 @@ public class PersonController {
 	@GetMapping("/personInfo")
 	public String getPersonInfo(@RequestParam("firstName") String firstName,
 								@RequestParam("lastName") String lastName) {
-		log.info("GET request made for getPersonInfo: " + firstName + " " + lastName);
+		log.info("HTTP GET request received for getPersonInfo: {} {}", firstName, lastName);
 		try {
-			log.info("GET called getPersonInfo, SUCCESS");
+			log.info("HTTP GET request received getPersonInfo, SUCCESS");
 			return JsonStream.serialize(personService.getPersonInfo(firstName, lastName));
 		} catch (NotFoundException e) {
-			log.error("GET called for getPersonInfo, ERROR");
+			log.error("HTTP GET request received for getPersonInfo, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
 		}
 	}
 
 	@GetMapping("/childAlert")
 	public String getChildrenAtAddress(@RequestParam("address") String address) {
-		log.info("GET request made for getChildrenAtAddress: " + address);
+		log.info("HTTP GET request received for getChildrenAtAddress: {}", address);
 		try {
-			log.info("GET called for getChildrenAtAddress, SUCCESS");
+			log.info("HTTP GET request received for getChildrenAtAddress, SUCCESS");
 			return JsonStream.serialize(personService.getChildrenAtAddress(address));
 		}
 		catch (NotFoundException e) {
-			log.error("GET called for getChildrenAtAddress, ERROR");
+			log.error("HTTP GET request received for getChildrenAtAddress, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
 		}
 	}
 
 	@GetMapping("/communityEmail")
 	public String getPersonsEmailsByCity(@RequestParam("city") String city) {
-		log.info("GET request made for getPersonsEmailsByCity: " + city);
+		log.info("HTTP GET request received for getPersonsEmailsByCity: {}", city);
 		try {
-			log.info("GET called getPersonsEmailsByCity, SUCCESS");
+			log.info("HTTP GET request received getPersonsEmailsByCity, SUCCESS");
 			return JsonStream.serialize(personService.getEmailsByCity(city));
 		} catch (NotFoundException e) {
-			log.error("GET called for getPersonsEmailsByCity, ERROR");
+			log.error("HTTP GET request received for getPersonsEmailsByCity, ERROR");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found", e);
 		}
 	}
