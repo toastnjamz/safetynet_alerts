@@ -56,7 +56,7 @@ public class JsonLoader {
 					(p.get("phone").toString()),
 					(p.get("email").toString()))));
 
-			//TODO: how to see this output?
+			//TODO: is this the right place for log.debug?
 			log.debug("Persons loaded from JSON file");
 
 			Any medicalAny = any.get("medicalrecords");

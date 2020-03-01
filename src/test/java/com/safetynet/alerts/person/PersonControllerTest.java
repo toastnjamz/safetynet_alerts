@@ -49,12 +49,12 @@ public class PersonControllerTest {
 //                .andExpect(content().json("[{\"firstName\":\"John\",\"lastName\":\"Boyd\"}]"));
 //    }
 
-//    @Test
-//    public void getAllPerson_personsExist_returnsAllPersons() throws Exception {
-//        this.mockMvc.perform(get("/persons")).
-//                andExpect(status().isOk()).
-//                andExpect(content().json("[{\"firstName\":\"John\",\"lastName\":\"Boyd\"}]"));
-//    }
+    @Test
+    public void getAllPerson_personsExist_returnsAllPersons() throws Exception {
+        this.mockMvc.perform(get("/persons")).
+                andExpect(status().isOk()).
+                andExpect(content().json("[{\"firstName\":\"John\",\"lastName\":\"Boyd\"}]"));
+    }
 
     @Test
     public void getPersonByFirstLastName_personExists_returnsPerson() {

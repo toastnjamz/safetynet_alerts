@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.domain.Person;
-import com.safetynet.alerts.exception.DuplicateException;
-import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.PersonRepository;
 
 import java.time.LocalDate;
@@ -19,14 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
-	
-	private PersonRepository personRepository;
 
+	private PersonRepository personRepository;
 	private MedicalRecordService medicalRecordService;
 	
 	@Autowired
 	public PersonService(PersonRepository personRepository, MedicalRecordService medicalRecordService) {
-
 		this.personRepository = personRepository;
 		this.medicalRecordService = medicalRecordService;
 	}
@@ -34,63 +30,58 @@ public class PersonService {
 	public List<Person> getAllPersons() {
 		return personRepository.findAll();
 	}
-	
-	public Person getPersonByFirstLastName(String firstName, String lastName) throws NotFoundException {
-		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new NotFoundException();
-		}
+
+	public Person getPersonByFirstLastName(String firstName, String lastName) {
 		return personRepository.findPerson(firstName, lastName);
 	}
-	
-	public Person createPerson(Person person) throws DuplicateException {
+
+	public Person createPerson(Person person) {
 		for (Person personInList : personRepository.findAll()) {
 			if (personInList.equals(person)) {
-				throw new DuplicateException();
+				return null;
 			}
 		}
 		return personRepository.createPerson(person);
 	}
-	
-	public void updatePerson(Person person) throws NotFoundException {
-		if (personRepository.findPerson(person.getFirstName(), person.getLastName()) == null) {
-			throw new NotFoundException();
+
+	public void updatePerson(Person person) {
+		for (Person personInList : personRepository.findAll()) {
+			if (personInList.equals(person)) {
+				personRepository.updatePerson(person);
+			}
 		}
-		personRepository.updatePerson(person);
 	}
 	
-	public void deletePerson(String firstName, String lastName) throws NotFoundException {
-		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new NotFoundException();
+	public void deletePerson(String firstName, String lastName) {
+		if (personRepository.findPerson(firstName, lastName) != null) {
+			personRepository.deletePerson(firstName, lastName);
 		}
-		personRepository.deletePerson(firstName, lastName);
 	}
 
-	public String getPersonAge(String firstName, String lastName) throws NotFoundException {
+	public String getPersonAge(String firstName, String lastName) {
+		String age = null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		LocalDate currentDate = LocalDate.now();
 
-		if (medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName) == null) {
-			throw new NotFoundException();
+		if (medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName) != null) {
+			MedicalRecord foundRecord = medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName);
+			LocalDate birthDate = LocalDate.parse(foundRecord.getBirthdate(), formatter);
+			age = Integer.toString(Period.between(birthDate, currentDate).getYears());
 		}
-		MedicalRecord foundRecord = medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName);
-		LocalDate birthDate = LocalDate.parse(foundRecord.getBirthdate(), formatter);
-
-		return Integer.toString(Period.between(birthDate, currentDate).getYears());
+		return age;
 	}
 
-	public Person getPersonInfo(String firstName, String lastName) throws NotFoundException {
-		if (personRepository.findPerson(firstName, lastName) == null) {
-			throw new NotFoundException();
+	public Person getPersonInfo(String firstName, String lastName) {
+		Person foundPerson = new Person();
+		if (personRepository.findPerson(firstName, lastName) != null) {
+			foundPerson.setFirstName(firstName);
+			foundPerson.setLastName(lastName);
+			foundPerson.setAddress(personRepository.findPerson(firstName, lastName).getAddress());
+			foundPerson.setEmail(personRepository.findPerson(firstName, lastName).getEmail());
+			foundPerson.setAge(getPersonAge(firstName, lastName));
+			foundPerson.setMedications(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getMedications());
+			foundPerson.setAllergies(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getAllergies());
 		}
-		Person foundPerson = personRepository.findPerson(firstName, lastName);
-		foundPerson.setFirstName(firstName);
-		foundPerson.setLastName(lastName);
-		foundPerson.setAddress(personRepository.findPerson(firstName, lastName).getAddress());
-		foundPerson.setEmail(personRepository.findPerson(firstName, lastName).getEmail());
-		foundPerson.setAge(getPersonAge(firstName, lastName));
-		foundPerson.setMedications(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getMedications());
-		foundPerson.setAllergies(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getAllergies());
-
 		return foundPerson;
 	}
 
@@ -120,23 +111,19 @@ public class PersonService {
 
 		if (personRepository.findAll().stream().anyMatch(p -> p.getAddress().equals(address))) {
 			initialPersonList = getPersonsAtAddress(address);
-		}
-		else {
-			throw new NotFoundException();
-		}
 
-		for (Person person : initialPersonList) {
-			Person formattedPerson = new Person(person.getFirstName(), person.getLastName(),
-					(getPersonAge(person.getFirstName(), person.getLastName())));
+			for (Person person : initialPersonList) {
+				Person formattedPerson = new Person(person.getFirstName(), person.getLastName(),
+						(getPersonAge(person.getFirstName(), person.getLastName())));
 
-			int age = Integer.parseInt(getPersonAge(person.getFirstName(), person.getLastName()));
-			if (age < 18) {
-				childrenList.add(formattedPerson);
-			} else {
-				adultList.add(formattedPerson);
+				int age = Integer.parseInt(getPersonAge(person.getFirstName(), person.getLastName()));
+				if (age < 18) {
+					childrenList.add(formattedPerson);
+				} else {
+					adultList.add(formattedPerson);
+				}
 			}
 		}
-
 		if (!childrenList.isEmpty()) {
 			resultPersonList.addAll(childrenList);
 			resultPersonList.addAll(adultList);

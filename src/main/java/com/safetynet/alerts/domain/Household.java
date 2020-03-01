@@ -1,6 +1,5 @@
 package com.safetynet.alerts.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,10 +28,6 @@ public class Household {
 
     public void setFormattedPersonList(List<Person> formattedPersonList) {
         this.formattedPersonList = formattedPersonList;
-    }
-
-    public void setFormattedPersonList(Person formattedPerson) {
-        formattedPersonList.add(formattedPerson);
     }
 
     @Override

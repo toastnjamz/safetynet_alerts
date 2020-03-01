@@ -17,19 +17,6 @@ public class Person {
 	private List<String> medications;
 	private List<String> allergies;
 
-	public Person() {
-		this.firstName = "";
-		this.lastName = "";
-		this.address = "";
-		this.city = "";
-		this.zip = "";
-		this.phone = "";
-		this.email = "";
-		this.age = "";
-		this.medications = new ArrayList<>();
-		this.allergies = new ArrayList<>();
-	}
-
 	public Person(String firstName, String lastName, String address, String city, String zip,
 			String phone, String email) {
 		this.firstName = firstName;
@@ -39,6 +26,17 @@ public class Person {
 		this.zip = zip;
 		this.phone = phone;
 		this.email = email;
+	}
+
+	// For some reason "Jackson" requires an empty constructor for createPerson to work
+	public Person() {
+		this.firstName = "";
+		this.lastName = "";
+		this.address = "";
+		this.city = "";
+		this.zip = "";
+		this.phone = "";
+		this.email = "";
 	}
 
 	public Person(String firstName, String lastName, String age) {
@@ -56,7 +54,7 @@ public class Person {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}

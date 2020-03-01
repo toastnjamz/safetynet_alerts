@@ -3,16 +3,16 @@ package com.safetynet.alerts.controller;
 import com.jsoniter.output.JsonStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import com.safetynet.alerts.domain.Person;
-import com.safetynet.alerts.exception.DuplicateException;
-import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.PersonService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 
 @RestController
@@ -32,96 +32,115 @@ public class PersonController {
 		log.info("HTTP GET request received for getAllPersons");
 		return JsonStream.serialize(personService.getAllPersons());
 	}
-	
+
 	@GetMapping("/person/{firstName}/{lastName}")
-	public String getPersonByFirstLastName(@PathVariable("firstName") String firstName,
-		@PathVariable("lastName") String lastName) {
+	public String getPersonByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
+										   @NotNull @PathVariable("lastName") String lastName,
+										   HttpServletResponse response) {
 		log.info("HTTP GET request received for getPersonByFirstLastName: {} {}", firstName, lastName);
-		try {
+		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
+		if (personOptional.isPresent()) {
 			log.info("HTTP GET request received for getPersonByFirstLastName, SUCCESS");
 			return JsonStream.serialize(personService.getPersonByFirstLastName(firstName, lastName));
-		} catch (NotFoundException e) {
+		}
+		else {
 			log.error("HTTP GET request received for getPersonByFirstLastName, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
+			response.setStatus(404);
+			return String.format("Person with name %s %s does not exist", firstName, lastName);
 		}
 	}
-	
+
 	@PostMapping("/person")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String createPerson(@RequestBody Person person) {
+	public String createPerson(@NotNull @RequestBody Person person,
+							   HttpServletResponse response) {
 		log.info("HTTP POST request received for createPerson: {} {}", person.getFirstName(), person.getLastName());
-		try {
+		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(person.getFirstName(), person.getLastName()));
+		if (!personOptional.isPresent()) {
 			log.info("HTTP POST request received for createPerson, SUCCESS");
+			response.setStatus(201);
 			return JsonStream.serialize(personService.createPerson(person));
-		} catch (DuplicateException e) {
+		}
+		else {
 			log.error("HTTP POST request received for createPerson, ERROR");
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Person already exists", e);
+			response.setStatus(409);
+			return String.format("Person %s %s already exists", person.getFirstName(), person.getLastName());
 		}
 	}
-	
+
 	@PutMapping("/person/{firstName}/{lastName}")
-	@ResponseStatus(HttpStatus.OK)
-	public void updatePerson(@RequestBody Person person, @PathVariable("firstName") String firstName,
-			@PathVariable("lastName") String lastName) {
+	public void updatePerson(@NotNull @RequestBody Person person,
+							 @NotNull @PathVariable("firstName") String firstName,
+							 @NotNull @PathVariable("lastName") String lastName,
+							 HttpServletResponse response) {
 		log.info("HTTP PUT request received for updatePerson: {} {}", firstName, lastName);
-		try {
+		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(person.getFirstName(), person.getLastName()));
+		if (personOptional.isPresent()) {
 			log.info("HTTP PUT request received for updatePerson, SUCCESS");
+			response.setStatus(200);
 			personService.updatePerson(person);
-		} catch (NotFoundException e) {
+		} else {
 			log.error("HTTP PUT request received for updatePerson, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
+			response.setStatus(404);
 		}
 	}
 	
 	@DeleteMapping("/person/{firstName}/{lastName}")
-	@ResponseStatus(HttpStatus.OK)
-	public void deletePerson(@PathVariable("firstName") String firstName, 
-			@PathVariable("lastName") String lastName) {
+	public void deletePerson(@NotNull @PathVariable("firstName") String firstName,
+							 @NotNull @PathVariable("lastName") String lastName,
+							 HttpServletResponse response) {
 		log.info("HTTP DELETE request received for deletePerson: {} {}", firstName, lastName);
-		try {
+		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
+		if (personOptional.isPresent()) {
 			log.info("HTTP DELETE request received for deletePerson, SUCCESS");
+			response.setStatus(200);
 			personService.deletePerson(firstName, lastName);
-		} catch (NotFoundException e) {
+		} else {
 			log.error("HTTP DELETE request received for deletePerson, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person does not exist", e);
+			response.setStatus(404);
 		}
 	}
 
 	@GetMapping("/personInfo")
-	public String getPersonInfo(@RequestParam("firstName") String firstName,
-								@RequestParam("lastName") String lastName) {
+	public String getPersonInfo(@NotNull @RequestParam("firstName") String firstName,
+								@NotNull @RequestParam("lastName") String lastName,
+								HttpServletResponse response) {
 		log.info("HTTP GET request received for getPersonInfo: {} {}", firstName, lastName);
-		try {
+		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
+		if (personOptional.isPresent()) {
 			log.info("HTTP GET request received getPersonInfo, SUCCESS");
 			return JsonStream.serialize(personService.getPersonInfo(firstName, lastName));
-		} catch (NotFoundException e) {
+		} else {
 			log.error("HTTP GET request received for getPersonInfo, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found", e);
+			response.setStatus(404);
+			return String.format("Person with name %s %s does not exist", firstName, lastName);
 		}
 	}
 
 	@GetMapping("/childAlert")
-	public String getChildrenAtAddress(@RequestParam("address") String address) {
+	public String getChildrenAtAddress(@NotNull @RequestParam("address") String address,
+									   HttpServletResponse response) {
 		log.info("HTTP GET request received for getChildrenAtAddress: {}", address);
-		try {
+		if (!personService.getChildrenAtAddress(address).isEmpty()) {
 			log.info("HTTP GET request received for getChildrenAtAddress, SUCCESS");
 			return JsonStream.serialize(personService.getChildrenAtAddress(address));
-		}
-		catch (NotFoundException e) {
+		} else {
 			log.error("HTTP GET request received for getChildrenAtAddress, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
+			response.setStatus(404);
+			return String.format("Address %s not found", address);
 		}
 	}
 
 	@GetMapping("/communityEmail")
-	public String getPersonsEmailsByCity(@RequestParam("city") String city) {
+	public String getPersonsEmailsByCity(@NotNull @RequestParam("city") String city,
+										 HttpServletResponse response) {
 		log.info("HTTP GET request received for getPersonsEmailsByCity: {}", city);
-		try {
+		if (!personService.getEmailsByCity(city).isEmpty()) {
 			log.info("HTTP GET request received getPersonsEmailsByCity, SUCCESS");
 			return JsonStream.serialize(personService.getEmailsByCity(city));
-		} catch (NotFoundException e) {
+		} else {
 			log.error("HTTP GET request received for getPersonsEmailsByCity, ERROR");
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found", e);
+			response.setStatus(404);
+			return String.format("City %s not found", city);
 		}
 	}
 }

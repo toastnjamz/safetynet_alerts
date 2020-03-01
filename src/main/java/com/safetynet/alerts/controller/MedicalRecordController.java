@@ -2,16 +2,16 @@ package com.safetynet.alerts.controller;
 
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.MedicalRecord;
-import com.safetynet.alerts.exception.DuplicateException;
-import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
-import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/medicalRecord")
@@ -32,61 +32,75 @@ public class MedicalRecordController {
         return JsonStream.serialize(medicalRecordService.getAllMedicalRecords());
     }
 
+    //TODO: test
     @GetMapping("/{firstName}/{lastName}")
-    public String getMedicalRecordByFirstLastName(@PathVariable("firstName") String firstName,
-                                                  @PathVariable("lastName") String lastName) {
+    public String getMedicalRecordByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
+                                                  @NotNull @PathVariable("lastName") String lastName,
+                                                  HttpServletResponse response) {
         log.info("HTTP GET request received for getMedicalRecordByFirstLastName: {} {}", firstName, lastName);
-        try {
+        Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
+        if (medicalOptional.isPresent()) {
             log.info("HTTP GET request received for getMedicalRecordByFirstLastName, SUCCESS");
             return JsonStream.serialize(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getMedicalRecordByFirstLastName, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record not found", e);
+            response.setStatus(404);
+            return String.format("Medical record for %s %s does not exist", firstName, lastName);
         }
     }
 
+    //TODO: test
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public String createMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+    public String createMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
+                                      HttpServletResponse response) {
         log.info("HTTP POST request received for createMedicalRecord: {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
-        try {
+        Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
+        if (!medicalOptional.isPresent()) {
             log.info("HTTP POST request received for createMedicalRecord, SUCCESS");
             return JsonStream.serialize(medicalRecordService.createMedicalRecord(medicalRecord));
         }
-        catch (DuplicateException e) {
+        else {
             log.error("HTTP POST request received for createMedicalRecord, ERROR");
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Medical Record already exists", e);
+            response.setStatus(409);
+            return String.format("Medical record for %s %s already exists", medicalRecord.getFirstName(), medicalRecord.getLastName());
         }
     }
 
+    //TODO: test
     @PutMapping("/{firstName}/{lastName}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateMedicalRecord(@RequestBody MedicalRecord medicalRecord, @PathVariable("firstName") String firstName,
-                                    @PathVariable("lastName") String lastName) {
+    public void updateMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
+                                    @NotNull @PathVariable("firstName") String firstName,
+                                    @NotNull @PathVariable("lastName") String lastName,
+                                    HttpServletResponse response) {
         log.info("HTTP PUT request received for updateMedicalRecord: {} {}", firstName, lastName);
-        try {
+        Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
+        if (medicalOptional.isPresent()) {
             log.info("HTTP PUT request received for updateMedicalRecord, SUCCESS");
+            response.setStatus(200);
             medicalRecordService.updateMedicalRecord(medicalRecord);
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP PUT request received for updateMedicalRecord, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
+            response.setStatus(404);
         }
     }
 
+    //TODO: test
     @DeleteMapping("/{firstName}/{lastName}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteMedicalRecord(@PathVariable("firstName") String firstName,
-                                    @PathVariable("lastName") String lastName) {
+    public void deleteMedicalRecord(@NotNull @PathVariable("firstName") String firstName,
+                                    @NotNull @PathVariable("lastName") String lastName,
+                                    HttpServletResponse response) {
         log.info("HTTP DELETE request received for deleteMedicalRecord: {} {}", firstName, lastName);
-        try {
+        Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
+        if (medicalOptional.isPresent()) {
             log.info("HTTP DELETE request received for deleteMedicalRecord, SUCCESS");
+            response.setStatus(200);
             medicalRecordService.deleteMedicalRecord(firstName, lastName);
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP DELETE request received for deleteMedicalRecord, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medical Record does not exist", e);
+            response.setStatus(404);
         }
     }
 }

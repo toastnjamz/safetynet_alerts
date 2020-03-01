@@ -1,8 +1,6 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.domain.MedicalRecord;
-import com.safetynet.alerts.exception.DuplicateException;
-import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,33 +21,30 @@ public class MedicalRecordService {
         return medicalRecordRepository.findAll();
     }
 
-    public MedicalRecord getMedicalRecordByFirstLastName(String firstName, String lastName) throws NotFoundException {
-        if (medicalRecordRepository.findMedicalRecord(firstName, lastName) == null) {
-            throw new NotFoundException();
-        }
+    public MedicalRecord getMedicalRecordByFirstLastName(String firstName, String lastName) {
         return medicalRecordRepository.findMedicalRecord(firstName, lastName);
     }
 
-    public MedicalRecord createMedicalRecord(MedicalRecord medicalRecord) throws DuplicateException {
+    public MedicalRecord createMedicalRecord(MedicalRecord medicalRecord) {
         for (MedicalRecord medicalInList : medicalRecordRepository.findAll()) {
             if (medicalInList.equals(medicalRecord)) {
-                throw new DuplicateException();
+                return null;
             }
         }
         return medicalRecordRepository.createMedicalRecord(medicalRecord);
     }
 
-    public void updateMedicalRecord(MedicalRecord medicalRecord) throws NotFoundException {
-        if (medicalRecordRepository.findMedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()) == null) {
-            throw new NotFoundException();
+    public void updateMedicalRecord(MedicalRecord medicalRecord) {
+        for (MedicalRecord recordInList : medicalRecordRepository.findAll()) {
+            if (recordInList.equals(medicalRecord)) {
+                medicalRecordRepository.updateMedicalRecord(medicalRecord);
+            }
         }
-        medicalRecordRepository.updateMedicalRecord(medicalRecord);
     }
 
-    public void deleteMedicalRecord(String firstName, String lastName) throws NotFoundException {
-        if (medicalRecordRepository.findMedicalRecord(firstName, lastName) == null) {
-            throw new NotFoundException();
+    public void deleteMedicalRecord(String firstName, String lastName) {
+        if (medicalRecordRepository.findMedicalRecord(firstName, lastName) != null) {
+            medicalRecordRepository.deleteMedicalRecord(firstName, lastName);
         }
-        medicalRecordRepository.deleteMedicalRecord(firstName, lastName);
     }
 }
