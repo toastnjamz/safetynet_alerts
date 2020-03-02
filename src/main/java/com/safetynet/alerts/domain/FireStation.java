@@ -5,39 +5,41 @@ import java.util.Objects;
 public class FireStation {
 
     private String address;
-    private String stationNo;
+    private String station;
 
-    public FireStation(String address, String stationNo) {
+    public FireStation() {
+        address = "";
+        station = "";
+    }
+
+    public FireStation(String address, String station) {
         this.address = address;
-        this.stationNo = stationNo;
+        this.station = station;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress() {
-        this.address = address;
+    public String getStation() {
+        return station;
     }
 
-    public String getStationNo() {
-        return stationNo;
-    }
-
-    public void setStationNo(String stationNo) {
-        this.stationNo = stationNo;
+    public void setStation(String station) {
+        this.station = station;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        FireStation fireStation = (FireStation) obj;
-        return (fireStation.address.equals(this.address) && (fireStation.stationNo.equals(this.stationNo)));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FireStation that = (FireStation) o;
+        return address.equals(that.address) &&
+                station.equals(that.station);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(address, stationNo);
+        return Objects.hash(address, station);
     }
 }

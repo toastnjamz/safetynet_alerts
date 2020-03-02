@@ -32,7 +32,6 @@ public class MedicalRecordController {
         return JsonStream.serialize(medicalRecordService.getAllMedicalRecords());
     }
 
-    //TODO: test
     @GetMapping("/{firstName}/{lastName}")
     public String getMedicalRecordByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
                                                   @NotNull @PathVariable("lastName") String lastName,
@@ -50,7 +49,6 @@ public class MedicalRecordController {
         }
     }
 
-    //TODO: test
     @PostMapping
     public String createMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
                                       HttpServletResponse response) {
@@ -67,7 +65,6 @@ public class MedicalRecordController {
         }
     }
 
-    //TODO: test
     @PutMapping("/{firstName}/{lastName}")
     public void updateMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
                                     @NotNull @PathVariable("firstName") String firstName,
@@ -86,7 +83,6 @@ public class MedicalRecordController {
         }
     }
 
-    //TODO: test
     @DeleteMapping("/{firstName}/{lastName}")
     public void deleteMedicalRecord(@NotNull @PathVariable("firstName") String firstName,
                                     @NotNull @PathVariable("lastName") String lastName,

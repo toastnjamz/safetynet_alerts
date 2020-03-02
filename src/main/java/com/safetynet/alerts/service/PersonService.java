@@ -45,11 +45,9 @@ public class PersonService {
 	}
 
 	public void updatePerson(Person person) {
-		for (Person personInList : personRepository.findAll()) {
-			if (personInList.equals(person)) {
-				personRepository.updatePerson(person);
+		if (personRepository.findPerson(person.getFirstName(), person.getLastName()) != null) {
+			personRepository.updatePerson(person);
 			}
-		}
 	}
 	
 	public void deletePerson(String firstName, String lastName) {

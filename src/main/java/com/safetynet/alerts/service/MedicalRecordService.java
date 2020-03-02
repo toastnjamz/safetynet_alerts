@@ -35,10 +35,8 @@ public class MedicalRecordService {
     }
 
     public void updateMedicalRecord(MedicalRecord medicalRecord) {
-        for (MedicalRecord recordInList : medicalRecordRepository.findAll()) {
-            if (recordInList.equals(medicalRecord)) {
-                medicalRecordRepository.updateMedicalRecord(medicalRecord);
-            }
+        if (medicalRecordRepository.findMedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()) != null) {
+            medicalRecordRepository.updateMedicalRecord(medicalRecord);
         }
     }
 

@@ -126,7 +126,8 @@ public class PersonController {
 		} else {
 			log.error("HTTP GET request received for getChildrenAtAddress, ERROR");
 			response.setStatus(404);
-			return String.format("Address %s not found", address);
+			//return String.format("There are no children at %s", address);
+			return String.format("");
 		}
 	}
 
@@ -140,7 +141,7 @@ public class PersonController {
 		} else {
 			log.error("HTTP GET request received for getPersonsEmailsByCity, ERROR");
 			response.setStatus(404);
-			return String.format("City %s not found", city);
+			return String.format("No emails were found for %s", city);
 		}
 	}
 }

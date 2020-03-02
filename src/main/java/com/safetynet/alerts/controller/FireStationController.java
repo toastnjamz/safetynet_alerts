@@ -2,6 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.jsoniter.output.JsonStream;
 import com.safetynet.alerts.domain.FireStation;
+import com.safetynet.alerts.domain.Person;
 import com.safetynet.alerts.exception.DuplicateException;
 import com.safetynet.alerts.exception.NotFoundException;
 import com.safetynet.alerts.service.FireStationService;
@@ -13,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class FireStationController {
@@ -35,109 +39,129 @@ public class FireStationController {
     }
 
     @GetMapping("/firestation/{address}")
-    public String getFireStationByAddress(@PathVariable("address") String address) {
+    public String getFireStationByAddress(@NotNull @PathVariable("address") String address,
+                                          HttpServletResponse response) {
         log.info("HTTP GET request received for getFireStationByAddress: {}", address);
-        try {
+        Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
+        if (stationOptional.isPresent()) {
             log.info("HTTP GET request received for getFireStationByAddress, SUCCESS");
             return JsonStream.serialize(fireStationService.getFireStationByAddress(address));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getFireStationByAddress, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
+            response.setStatus(404);
+            return String.format("Station not found for address %s", address);
         }
     }
 
     @PostMapping("/firestation")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String createFireStation(@RequestBody FireStation fireStation) {
+    public String createFireStation(@NotNull @RequestBody FireStation fireStation,
+                                    HttpServletResponse response) {
         log.info("HTTP POST request received for createFireStation: {}", fireStation.getAddress());
-        try {
+        Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(fireStation.getAddress()));
+        if (!stationOptional.isPresent()) {
             log.info("HTTP POST request received for createFireStation, SUCCESS");
+            response.setStatus(201);
             return JsonStream.serialize(fireStationService.createFireStation(fireStation));
         }
-        catch (DuplicateException e) {
+        else {
             log.error("HTTP POST request received for createFireStation, ERROR");
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Fire Station already exists", e);
+            response.setStatus(409);
+            return String.format("Station for address %s already exists", fireStation.getAddress());
         }
     }
 
     @PutMapping("/firestation/{address}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateFireStation(@RequestBody FireStation fireStation, @PathVariable("address") String address) {
+    public void updateFireStation(@NotNull @RequestBody FireStation fireStation,
+                                  @NotNull @PathVariable("address") String address,
+                                  HttpServletResponse response) {
         log.info("HTTP PUT request received for updateFireStation: {}", address);
-        try {
+        Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
+        if (stationOptional.isPresent()) {
             log.info("HTTP PUT request received for updateFireStation, SUCCESS");
+            response.setStatus(200);
             fireStationService.updateFireStation(fireStation);
-        } catch (NotFoundException e) {
+        }
+        else {
             log.error("HTTP PUT request received for updateFireStation, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
+            response.setStatus(404);
         }
     }
 
     @DeleteMapping("/firestation/{address}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteFireStation(@PathVariable("address") String address) {
+    public void deleteFireStation(@NotNull @PathVariable("address") String address,
+                                  HttpServletResponse response) {
         log.info("HTTP DELETE request received for deleteFireStation: {}", address);
-        try {
+        Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
+        if (stationOptional.isPresent()) {
             log.info("HTTP DELETE request received for deleteFireStation, SUCCESS");
+            response.setStatus(200);
             fireStationService.deleteFireStation(address);
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP DELETE request received for deleteFireStation, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station does not exist", e);
+            response.setStatus(404);
         }
     }
 
     @GetMapping("/firestation")
-    public String getPersonsByStation(@RequestParam("stationNumber") String stationNumber) {
+    public String getPersonsByStation(@NotNull @RequestParam("stationNumber") String stationNumber,
+                                      HttpServletResponse response) {
         log.info("HTTP GET request received for getPersonsByStation: {}", stationNumber);
-        try {
+        if (fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber) != null) {
             log.info("HTTP GET request received for getPersonsByStation, SUCCESS");
             return JsonStream.serialize(fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getPersonsByStation, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
+            response.setStatus(404);
+            return String.format("Persons not found for station number %s", stationNumber);
         }
     }
 
     @GetMapping("/fire")
-    public String getStationAndPersonsByAddress(@RequestParam("address") String address) {
+    public String getStationAndPersonsByAddress(@NotNull @RequestParam("address") String address,
+                                                HttpServletResponse response) {
         log.info("HTTP GET request received for getStationAndPersonsByAddress: {}", address);
-        try {
+        if (!fireStationService.getStationAndPersonsByAddress(address).isEmpty()) {
             log.info("HTTP GET request received for getStationAndPersonsByAddress, SUCCESS");
             return JsonStream.serialize(fireStationService.getStationAndPersonsByAddress(address));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getStationAndPersonsByAddress, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found", e);
+            response.setStatus(404);
+            return String.format("Station and persons not found for address %s", address);
         }
     }
 
-    //TODO
+    //TODO: test
     @GetMapping("/flood/stations")
-    public String getHouseholdsByStationList(@RequestParam List<String> stations) {
+    public String getHouseholdsByStationList(@NotNull @RequestParam List<String> stations,
+                                             HttpServletResponse response) {
         log.info("HTTP GET request received for getHouseholdsByStationList: {}", Arrays.toString(stations.toArray()));
-        try {
+        if (!fireStationService.getHouseholdsByStationList(stations).isEmpty()) {
             log.info("HTTP GET request received for getHouseholdsByStationList, SUCCESS");
             return JsonStream.serialize(fireStationService.getHouseholdsByStationList(stations));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getHouseholdsByStationList, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Station(s) not found", e);
+            response.setStatus(404);
+            return String.format("No household info found for %s", stations);
         }
     }
 
     @GetMapping("/phoneAlert")
-    public String getPhoneNumbersByStation(@RequestParam("firestation") String stationNumber) {
+    public String getPhoneNumbersByStation(@NotNull @RequestParam("firestation") String stationNumber,
+                                           HttpServletResponse response) {
         log.info("HTTP GET request received for getPhoneNumbersByStation: {}", stationNumber);
-        try {
+        if (!fireStationService.getPhoneNumbersByStationNumber(stationNumber).isEmpty()) {
             log.info("HTTP GET request received for getPhoneNumbersByStation, SUCCESS");
             return JsonStream.serialize(fireStationService.getPhoneNumbersByStationNumber(stationNumber));
         }
-        catch (NotFoundException e) {
+        else {
             log.error("HTTP GET request received for getPhoneNumbersByStation, ERROR");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fire Station not found", e);
+            response.setStatus(404);
+            return String.format("No phone numbers found for station number %s", stationNumber);
         }
     }
 }

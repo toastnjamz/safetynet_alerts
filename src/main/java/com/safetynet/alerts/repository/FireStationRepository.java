@@ -37,7 +37,7 @@ public class FireStationRepository {
 
     public void updateStation(FireStation fireStation) {
         FireStation updateStation = findStation(fireStation.getAddress());
-        updateStation.setStationNo(fireStation.getStationNo());
+        updateStation.setStation(fireStation.getStation());
     }
 
     public void deleteStation(String address) {
