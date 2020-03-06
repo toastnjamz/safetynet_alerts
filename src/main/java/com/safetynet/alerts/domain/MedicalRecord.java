@@ -46,20 +46,6 @@ public class MedicalRecord {
 		medications.addAll(NewMedications);
 	}
 
-	//TODO: Remove unused methods
-//	public String getMedication(String medication) {
-//		for (String medInList : medications) {
-//			if (medInList.equals(medication)) {
-//				return medInList;
-//			}
-//		}
-//		return null;
-//	}
-//
-//	public void setMedication(String medication) {
-//		medications.add(medication);
-//	}
-
 	public List<String> getAllergies() {
 		return allergies;
 	}
@@ -68,19 +54,6 @@ public class MedicalRecord {
 		allergies.clear();
 		allergies.addAll(newAllergies);
 	}
-
-//	public String getAllergy(String allergy) {
-//		for (String allergyInList : allergies) {
-//			if (allergyInList.equals(allergy)) {
-//				return allergyInList;
-//			}
-//		}
-//		return null;
-//	}
-//
-//	public void setAllergy(String allergy) {
-//		allergies.add(allergy);
-//	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -33,11 +33,11 @@ public class PersonController {
 		return JsonStream.serialize(personService.getAllPersons());
 	}
 
-	@GetMapping("/person/{firstName}/{lastName}")
-	public String getPersonByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
-										   @NotNull @PathVariable("lastName") String lastName,
+	@GetMapping("/person")
+	public String getPersonByFirstLastName(@NotNull @RequestParam String firstName,
+										   @NotNull @RequestParam String lastName,
 										   HttpServletResponse response) {
-		log.info("HTTP GET request received for getPersonByFirstLastName: {} {}", firstName, lastName);
+		log.debug("HTTP GET request received for getPersonByFirstLastName: {} {}", firstName, lastName);
 		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
 		if (personOptional.isPresent()) {
 			log.info("HTTP GET request received for getPersonByFirstLastName, SUCCESS");
@@ -53,7 +53,7 @@ public class PersonController {
 	@PostMapping("/person")
 	public String createPerson(@NotNull @RequestBody Person person,
 							   HttpServletResponse response) {
-		log.info("HTTP POST request received for createPerson: {} {}", person.getFirstName(), person.getLastName());
+		log.debug("HTTP POST request received for createPerson: {} {}", person.getFirstName(), person.getLastName());
 		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(person.getFirstName(), person.getLastName()));
 		if (!personOptional.isPresent()) {
 			log.info("HTTP POST request received for createPerson, SUCCESS");
@@ -67,12 +67,12 @@ public class PersonController {
 		}
 	}
 
-	@PutMapping("/person/{firstName}/{lastName}")
+	@PutMapping("/person")
 	public void updatePerson(@NotNull @RequestBody Person person,
-							 @NotNull @PathVariable("firstName") String firstName,
-							 @NotNull @PathVariable("lastName") String lastName,
+							 @NotNull @RequestParam String firstName,
+							 @NotNull @RequestParam String lastName,
 							 HttpServletResponse response) {
-		log.info("HTTP PUT request received for updatePerson: {} {}", firstName, lastName);
+		log.debug("HTTP PUT request received for updatePerson: {} {}", firstName, lastName);
 		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(person.getFirstName(), person.getLastName()));
 		if (personOptional.isPresent()) {
 			log.info("HTTP PUT request received for updatePerson, SUCCESS");
@@ -84,11 +84,11 @@ public class PersonController {
 		}
 	}
 	
-	@DeleteMapping("/person/{firstName}/{lastName}")
-	public void deletePerson(@NotNull @PathVariable("firstName") String firstName,
-							 @NotNull @PathVariable("lastName") String lastName,
+	@DeleteMapping("/person/")
+	public void deletePerson(@NotNull @RequestParam String firstName,
+							 @NotNull @RequestParam String lastName,
 							 HttpServletResponse response) {
-		log.info("HTTP DELETE request received for deletePerson: {} {}", firstName, lastName);
+		log.debug("HTTP DELETE request received for deletePerson: {} {}", firstName, lastName);
 		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
 		if (personOptional.isPresent()) {
 			log.info("HTTP DELETE request received for deletePerson, SUCCESS");
@@ -101,10 +101,10 @@ public class PersonController {
 	}
 
 	@GetMapping("/personInfo")
-	public String getPersonInfo(@NotNull @RequestParam("firstName") String firstName,
-								@NotNull @RequestParam("lastName") String lastName,
+	public String getPersonInfo(@NotNull @RequestParam String firstName,
+								@NotNull @RequestParam String lastName,
 								HttpServletResponse response) {
-		log.info("HTTP GET request received for getPersonInfo: {} {}", firstName, lastName);
+		log.debug("HTTP GET request received for getPersonInfo: {} {}", firstName, lastName);
 		Optional<Person> personOptional = Optional.ofNullable(personService.getPersonByFirstLastName(firstName, lastName));
 		if (personOptional.isPresent()) {
 			log.info("HTTP GET request received getPersonInfo, SUCCESS");
@@ -117,9 +117,9 @@ public class PersonController {
 	}
 
 	@GetMapping("/childAlert")
-	public String getChildrenAtAddress(@NotNull @RequestParam("address") String address,
+	public String getChildrenAtAddress(@NotNull @RequestParam String address,
 									   HttpServletResponse response) {
-		log.info("HTTP GET request received for getChildrenAtAddress: {}", address);
+		log.debug("HTTP GET request received for getChildrenAtAddress: {}", address);
 		if (!personService.getChildrenAtAddress(address).isEmpty()) {
 			log.info("HTTP GET request received for getChildrenAtAddress, SUCCESS");
 			return JsonStream.serialize(personService.getChildrenAtAddress(address));
@@ -132,9 +132,9 @@ public class PersonController {
 	}
 
 	@GetMapping("/communityEmail")
-	public String getPersonsEmailsByCity(@NotNull @RequestParam("city") String city,
+	public String getPersonsEmailsByCity(@NotNull @RequestParam String city,
 										 HttpServletResponse response) {
-		log.info("HTTP GET request received for getPersonsEmailsByCity: {}", city);
+		log.debug("HTTP GET request received for getPersonsEmailsByCity: {}", city);
 		if (!personService.getEmailsByCity(city).isEmpty()) {
 			log.info("HTTP GET request received getPersonsEmailsByCity, SUCCESS");
 			return JsonStream.serialize(personService.getEmailsByCity(city));

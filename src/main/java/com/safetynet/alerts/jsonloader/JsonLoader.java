@@ -56,7 +56,7 @@ public class JsonLoader {
 					(p.get("phone").toString()),
 					(p.get("email").toString()))));
 
-			//TODO: is this the right place for log.debug?
+			//Diagnostic debug out to confirm persons have been loaded from JSON
 			log.debug("Persons loaded from JSON file");
 
 			Any medicalAny = any.get("medicalrecords");
@@ -66,12 +66,14 @@ public class JsonLoader {
 					medicalRecord.get("medications").as(new TypeLiteral<List<String>>(){}),
 					medicalRecord.get("allergies").as(new TypeLiteral<List<String>>(){}))));
 
+			//Diagnostic debug out to confirm medical records have been loaded from JSON
 			log.debug("Medical Records loaded from JSON file");
 
 			Any anyFireStation = any.get("firestations");
 			anyFireStation.forEach(f -> fireStationRepository.createStation(new FireStation(f.get("address").toString(),
 					(f.get("station").toString()))));
 
+			//Diagnostic debug out to confirm fire stations have been loaded from JSON
 			log.debug("Fire Stations loaded from JSON file");
 
 		}

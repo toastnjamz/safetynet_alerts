@@ -36,7 +36,7 @@ public class MedicalRecordController {
     public String getMedicalRecordByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
                                                   @NotNull @PathVariable("lastName") String lastName,
                                                   HttpServletResponse response) {
-        log.info("HTTP GET request received for getMedicalRecordByFirstLastName: {} {}", firstName, lastName);
+        log.debug("HTTP GET request received for getMedicalRecordByFirstLastName: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
         if (medicalOptional.isPresent()) {
             log.info("HTTP GET request received for getMedicalRecordByFirstLastName, SUCCESS");
@@ -52,7 +52,7 @@ public class MedicalRecordController {
     @PostMapping
     public String createMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
                                       HttpServletResponse response) {
-        log.info("HTTP POST request received for createMedicalRecord: {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
+        log.debug("HTTP POST request received for createMedicalRecord: {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
         if (!medicalOptional.isPresent()) {
             log.info("HTTP POST request received for createMedicalRecord, SUCCESS");
@@ -70,7 +70,7 @@ public class MedicalRecordController {
                                     @NotNull @PathVariable("firstName") String firstName,
                                     @NotNull @PathVariable("lastName") String lastName,
                                     HttpServletResponse response) {
-        log.info("HTTP PUT request received for updateMedicalRecord: {} {}", firstName, lastName);
+        log.debug("HTTP PUT request received for updateMedicalRecord: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
         if (medicalOptional.isPresent()) {
             log.info("HTTP PUT request received for updateMedicalRecord, SUCCESS");
@@ -87,7 +87,7 @@ public class MedicalRecordController {
     public void deleteMedicalRecord(@NotNull @PathVariable("firstName") String firstName,
                                     @NotNull @PathVariable("lastName") String lastName,
                                     HttpServletResponse response) {
-        log.info("HTTP DELETE request received for deleteMedicalRecord: {} {}", firstName, lastName);
+        log.debug("HTTP DELETE request received for deleteMedicalRecord: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
         if (medicalOptional.isPresent()) {
             log.info("HTTP DELETE request received for deleteMedicalRecord, SUCCESS");

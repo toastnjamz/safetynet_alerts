@@ -4,9 +4,9 @@ package com.safetynet.alerts.person;
 //import static org.junit.Assert.assertThat;
 import static org.junit.Assert.*;
 
+import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.service.MedicalRecordService;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +16,8 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -27,20 +29,47 @@ public class PersonServiceTest {
 	private PersonService personService;
 	private Person person1;
 	private Person person2;
+	private Person person3;
+	private MedicalRecord medicalRecord1;
+	private MedicalRecord medicalRecord2;
+	private MedicalRecord medicalRecord3;
 
 	@Before
 	public void setup() {
 		personRepository = new PersonRepository();
+		medicalRecordRepository = new MedicalRecordRepository();
 		medicalRecordService = new MedicalRecordService(medicalRecordRepository);
 		personService = new PersonService(personRepository, medicalRecordService);
 
 		person1 = new Person("Duncan", "Idaho", "123 Market Street", "Giedi Prime",
 				"12345", "555-555-5555", "duncan@gmail.com");
-		person2 = new Person("Jessica", "Atreides", "456 Grand Palace", "Arrakeen", "12345",
+		person2 = new Person("Jessica", "Atreides", "1 Grand Palace", "Arrakeen", "12345",
 				"555-555-5555", "benegesserit@yahoo.com");
+		person3 = new Person("Paul", "Atreides", "1 Grand Palace", "Caladan",
+				"12345", "555-555-5555", "maud-dib@gmail.com");
 
 		personService.createPerson(person1);
 		personService.createPerson(person2);
+		personService.createPerson(person3);
+
+		List<String> medicationsList1 = new ArrayList<>(); { medicationsList1.add("medication1"); }
+		List<String> medicationsList2 = new ArrayList<>(); { medicationsList2.add("medication2"); }
+		List<String> medicationsList3 = new ArrayList<>();
+		List<String> allergiesList1 = new ArrayList<>(); { allergiesList1.add("allergy1"); }
+		List<String> allergiesList2 = new ArrayList<>(); { allergiesList2.add("allergy2"); allergiesList2.add("allergy3"); }
+		List<String> allergiesList3 = new ArrayList<>();
+
+
+		medicalRecord1 = new MedicalRecord("Duncan", "Idaho", "01/01/1960", medicationsList1,
+				allergiesList1);
+		medicalRecord2 = new MedicalRecord("Jessica", "Atreides", "01/01/1970", medicationsList2,
+				allergiesList2);
+		medicalRecord3 = new MedicalRecord("Paul", "Atreides", "01/01/2010", medicationsList3,
+				allergiesList3);
+
+		medicalRecordService.createMedicalRecord(medicalRecord1);
+		medicalRecordService.createMedicalRecord(medicalRecord2);
+		medicalRecordService.createMedicalRecord(medicalRecord3);
 	}
 
 	@Test
@@ -51,12 +80,12 @@ public class PersonServiceTest {
         List<Person> result = personService.getAllPersons();
 
 		// assert
+		assertEquals(result.size(), 3);
         assertTrue(result.get(0).getFirstName().equals("Duncan"));
-        assertTrue(result.get(1).getFirstName().equals("Jessica"));
 	}
 
 	@Test
-	public void getPersonByFirstLastName_repositoryHasData_personDataReturned() {
+	public void getPersonByFirstLastName_personExists_personDataReturned() {
 		// arrange
 
 		// act
@@ -67,20 +96,20 @@ public class PersonServiceTest {
 	}
 
 	@Test
-	public void createPerson_addingNewPerson_personDataReturned() {
+	public void createPerson_addingValidPerson_personDataReturned() {
 		// arrange
-		Person person3 = new Person("Paul", "Atreides", "123 Grand Palace", "Caladan",
-				"12345", "555-555-5555", "maud-dib@gmail.com");
+		Person person4 = new Person("Gurney", "Halleck", "123 Grand Palace", "Caladan",
+				"12345", "555-555-5555", "warrior.minstrel@palace.edu");
 
 		// act
-        Person result = personService.createPerson(person3);;
+        Person result = personService.createPerson(person4);;
 
 		// assert
-        assertTrue(result.equals(person3));
+        assertTrue(result.equals(person4));
 	}
 
 	@Test
-	public void updatePerson_addingAndUpdatingPerson_personDataUpdated() {
+	public void updatePerson_updatingValidPerson_personDataUpdated() {
 		// arrange
         assertEquals("123 Market Street", person1.getAddress());
 
@@ -95,90 +124,115 @@ public class PersonServiceTest {
 	}
 
 	@Test
-	public void deletePerson_addingAndDeletingPerson_personDataDeleted() {
+	public void deletePerson_personExists_personDataDeleted() {
 		// arrange
-		Person person3 = new Person("Paul", "Atreides", "123 Grand Palace", "Caladan",
-				"12345", "555-555-5555", "maud-dib@gmail.com");
+		Person person4 = new Person("Gurney", "Halleck", "123 Grand Palace", "Caladan",
+				"12345", "555-555-5555", "warrior.minstrel@palace.edu");
 
-		Person personCreated = personService.createPerson(person3);
-		assertEquals(3, personRepository.findAll().size());
+		Person personCreated = personService.createPerson(person4);
+		assertEquals(4, personRepository.findAll().size());
 
 		// act
-		personService.deletePerson("Paul", "Atreides");
+		personService.deletePerson("Gurney", "Halleck");
 
 		// assert
-		assertEquals(2, personRepository.findAll().size());
+		assertEquals(3, personRepository.findAll().size());
 	}
 
     @Test
-    public void getPersonAge_repositoryHasData_personDataReturned() {
+    public void getPersonAge_personExists_personAgeReturned() {
         // arrange
 
         // act
+		String age = personService.getPersonAge(person1.getFirstName(), person1.getLastName());
 
         // assert
+		assertEquals("60", age);
     }
 
     @Test
-    public void getPersonInfo_repositoryHasData_personDataReturned() {
+    public void getPersonInfo_personExists_personInfoReturned() {
         // arrange
 
         // act
+		Person result = personService.getPersonInfo(person1.getFirstName(), person1.getLastName());
 
         // assert
+		assertTrue(result.equals(person1));
     }
 
     @Test
-    public void getPersonsAtAddress_repositoryHasData_personListReturned() {
+    public void getPersonsAtAddress_personsAtAddress_personListReturned() {
         // arrange
+		String address = "123 Market Street";
 
-        // act
+		// act
+		List<Person> result = personService.getPersonsAtAddress(address);
 
         // assert
+		assertEquals(result.size(), 1);
+		assertTrue(result.get(0).getFirstName().equals("Duncan"));
     }
 
     @Test
-    public void getPersonsAtAddresses_repositoryHasData_personListReturned() {
+    public void getPersonsAtAddresses_personsAtAddress_personListReturned() {
         // arrange
+		List<String> addressList = new ArrayList<>(); { addressList.add("123 Market Street"); addressList.add("1 Grand Palace"); }
 
-        // act
+		// act
+		List<Person> result = personService.getPersonsAtAddresses(addressList);
 
         // assert
+		assertTrue(result.size() == 3);
+		assertTrue(result.get(0).getFirstName().equals("Duncan"));
+		assertTrue(result.get(1).getFirstName().equals("Jessica"));
     }
 
     @Test
-    public void getChildrenAtAddress_repositoryHasData_personListReturned() {
+    public void getChildrenAtAddress_childrenAtAddress_personListReturned() {
         // arrange
 
         // act
+		List<Person> result = personService.getChildrenAtAddress("1 Grand Palace");
 
         // assert
+		assertEquals(result.size(), 2);
+		assertTrue(result.get(0).getFirstName().equals("Paul"));
     }
 
     @Test
-    public void getChildrenInList_repositoryHasData_numberChildrenReturned() {
+    public void getChildrenInList_ListExists_numberChildrenReturned() {
         // arrange
+		List<Person> personList = new ArrayList<>(); { personList.add(person1); personList.add(person2); personList.add(person3); }
 
         // act
+		String result = personService.getChildrenInList(personList);
 
         // assert
+		assertEquals(result, "1");
     }
 
     @Test
-    public void getAdultsInList_repositoryHasData_numberAdultsReturned() {
-        // arrange
+    public void getAdultsInList_ListExists_numberAdultsReturned() {
+		// arrange
+		List<Person> personList = new ArrayList<>(); { personList.add(person1); personList.add(person2); personList.add(person3); }
 
-        // act
+		// act
+		String result = personService.getAdultsInList(personList);
 
-        // assert
-    }
+		// assert
+		assertEquals(result, "2");
+	}
 
     @Test
-    public void getEmailsByCity_repositoryHasData_emailsListReturned() {
+    public void getEmailsByCity_emailsForCityExist_emailsListReturned() {
         // arrange
 
         // act
+		List<String> result = personService.getEmailsByCity("Giedi Prime");
 
         // assert
+		assertEquals(result.size(), 1);
+		assertTrue(result.get(0).equals("duncan@gmail.com"));
     }
 }

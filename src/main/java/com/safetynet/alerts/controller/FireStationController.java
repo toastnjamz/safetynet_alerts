@@ -36,7 +36,7 @@ public class FireStationController {
     @GetMapping("/firestation/{address}")
     public String getFireStationByAddress(@NotNull @PathVariable("address") String address,
                                           HttpServletResponse response) {
-        log.info("HTTP GET request received for getFireStationByAddress: {}", address);
+        log.debug("HTTP GET request received for getFireStationByAddress: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
         if (stationOptional.isPresent()) {
             log.info("HTTP GET request received for getFireStationByAddress, SUCCESS");
@@ -52,7 +52,7 @@ public class FireStationController {
     @PostMapping("/firestation")
     public String createFireStation(@NotNull @RequestBody FireStation fireStation,
                                     HttpServletResponse response) {
-        log.info("HTTP POST request received for createFireStation: {}", fireStation.getAddress());
+        log.debug("HTTP POST request received for createFireStation: {}", fireStation.getAddress());
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(fireStation.getAddress()));
         if (!stationOptional.isPresent()) {
             log.info("HTTP POST request received for createFireStation, SUCCESS");
@@ -70,7 +70,7 @@ public class FireStationController {
     public void updateFireStation(@NotNull @RequestBody FireStation fireStation,
                                   @NotNull @PathVariable("address") String address,
                                   HttpServletResponse response) {
-        log.info("HTTP PUT request received for updateFireStation: {}", address);
+        log.debug("HTTP PUT request received for updateFireStation: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
         if (stationOptional.isPresent()) {
             log.info("HTTP PUT request received for updateFireStation, SUCCESS");
@@ -86,7 +86,7 @@ public class FireStationController {
     @DeleteMapping("/firestation/{address}")
     public void deleteFireStation(@NotNull @PathVariable("address") String address,
                                   HttpServletResponse response) {
-        log.info("HTTP DELETE request received for deleteFireStation: {}", address);
+        log.debug("HTTP DELETE request received for deleteFireStation: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
         if (stationOptional.isPresent()) {
             log.info("HTTP DELETE request received for deleteFireStation, SUCCESS");
@@ -102,7 +102,7 @@ public class FireStationController {
     @GetMapping("/firestation")
     public String getPersonsByStation(@NotNull @RequestParam("stationNumber") String stationNumber,
                                       HttpServletResponse response) {
-        log.info("HTTP GET request received for getPersonsByStation: {}", stationNumber);
+        log.debug("HTTP GET request received for getPersonsByStation: {}", stationNumber);
         if (fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber) != null) {
             log.info("HTTP GET request received for getPersonsByStation, SUCCESS");
             return JsonStream.serialize(fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber));
@@ -117,7 +117,7 @@ public class FireStationController {
     @GetMapping("/fire")
     public String getStationAndPersonsByAddress(@NotNull @RequestParam("address") String address,
                                                 HttpServletResponse response) {
-        log.info("HTTP GET request received for getStationAndPersonsByAddress: {}", address);
+        log.debug("HTTP GET request received for getStationAndPersonsByAddress: {}", address);
         if (!fireStationService.getStationAndPersonsByAddress(address).isEmpty()) {
             log.info("HTTP GET request received for getStationAndPersonsByAddress, SUCCESS");
             return JsonStream.serialize(fireStationService.getStationAndPersonsByAddress(address));
@@ -133,7 +133,7 @@ public class FireStationController {
     @GetMapping("/flood/stations")
     public String getHouseholdsByStationList(@NotNull @RequestParam List<String> stations,
                                              HttpServletResponse response) {
-        log.info("HTTP GET request received for getHouseholdsByStationList: {}", Arrays.toString(stations.toArray()));
+        log.debug("HTTP GET request received for getHouseholdsByStationList: {}", Arrays.toString(stations.toArray()));
         if (!fireStationService.getHouseholdsByStationList(stations).isEmpty()) {
             log.info("HTTP GET request received for getHouseholdsByStationList, SUCCESS");
             return JsonStream.serialize(fireStationService.getHouseholdsByStationList(stations));
@@ -148,7 +148,7 @@ public class FireStationController {
     @GetMapping("/phoneAlert")
     public String getPhoneNumbersByStation(@NotNull @RequestParam("firestation") String stationNumber,
                                            HttpServletResponse response) {
-        log.info("HTTP GET request received for getPhoneNumbersByStation: {}", stationNumber);
+        log.debug("HTTP GET request received for getPhoneNumbersByStation: {}", stationNumber);
         if (!fireStationService.getPhoneNumbersByStationNumber(stationNumber).isEmpty()) {
             log.info("HTTP GET request received for getPhoneNumbersByStation, SUCCESS");
             return JsonStream.serialize(fireStationService.getPhoneNumbersByStationNumber(stationNumber));
