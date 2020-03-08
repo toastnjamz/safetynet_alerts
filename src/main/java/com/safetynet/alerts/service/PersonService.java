@@ -70,17 +70,17 @@ public class PersonService {
 	}
 
 	public Person getPersonInfo(String firstName, String lastName) {
-		Person foundPerson = new Person();
+		Person foundPerson;
 		if (personRepository.findPerson(firstName, lastName) != null) {
-			foundPerson.setFirstName(firstName);
-			foundPerson.setLastName(lastName);
-			foundPerson.setAddress(personRepository.findPerson(firstName, lastName).getAddress());
-			foundPerson.setEmail(personRepository.findPerson(firstName, lastName).getEmail());
-			foundPerson.setAge(getPersonAge(firstName, lastName));
-			foundPerson.setMedications(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getMedications());
-			foundPerson.setAllergies(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getAllergies());
+			foundPerson = new Person(firstName, lastName,
+					personRepository.findPerson(firstName, lastName).getAddress(),
+					personRepository.findPerson(firstName, lastName).getEmail(),
+					getPersonAge(firstName, lastName),
+					medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getMedications(),
+					medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName).getAllergies());
+			return foundPerson;
 		}
-		return foundPerson;
+		return null;
 	}
 
 	public List<Person> getPersonsAtAddress(String address) {

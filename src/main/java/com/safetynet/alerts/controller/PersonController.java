@@ -83,8 +83,8 @@ public class PersonController {
 			response.setStatus(404);
 		}
 	}
-	
-	@DeleteMapping("/person/")
+
+	@DeleteMapping("/person")
 	public void deletePerson(@NotNull @RequestParam String firstName,
 							 @NotNull @RequestParam String lastName,
 							 HttpServletResponse response) {

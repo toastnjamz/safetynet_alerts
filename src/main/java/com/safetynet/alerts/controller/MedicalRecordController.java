@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+
 @RestController
-@RequestMapping("/medicalRecord")
 public class MedicalRecordController {
 
     private static final Logger log = LoggerFactory.getLogger(MedicalRecordController.class);
@@ -26,15 +26,15 @@ public class MedicalRecordController {
         this.medicalRecordService = medicalRecordService;
     }
 
-    @GetMapping
+    @GetMapping("/medicalRecords")
     public String getAllMedicalRecords() {
         log.info("HTTP GET request received for getAllMedicalRecords");
         return JsonStream.serialize(medicalRecordService.getAllMedicalRecords());
     }
 
-    @GetMapping("/{firstName}/{lastName}")
-    public String getMedicalRecordByFirstLastName(@NotNull @PathVariable("firstName") String firstName,
-                                                  @NotNull @PathVariable("lastName") String lastName,
+    @GetMapping("/medicalRecord")
+    public String getMedicalRecordByFirstLastName(@NotNull @RequestParam String firstName,
+                                                  @NotNull @RequestParam String lastName,
                                                   HttpServletResponse response) {
         log.debug("HTTP GET request received for getMedicalRecordByFirstLastName: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));
@@ -49,13 +49,14 @@ public class MedicalRecordController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/medicalRecord")
     public String createMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
                                       HttpServletResponse response) {
         log.debug("HTTP POST request received for createMedicalRecord: {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
         if (!medicalOptional.isPresent()) {
             log.info("HTTP POST request received for createMedicalRecord, SUCCESS");
+            response.setStatus(201);
             return JsonStream.serialize(medicalRecordService.createMedicalRecord(medicalRecord));
         }
         else {
@@ -65,10 +66,10 @@ public class MedicalRecordController {
         }
     }
 
-    @PutMapping("/{firstName}/{lastName}")
+    @PutMapping("/medicalRecord")
     public void updateMedicalRecord(@NotNull @RequestBody MedicalRecord medicalRecord,
-                                    @NotNull @PathVariable("firstName") String firstName,
-                                    @NotNull @PathVariable("lastName") String lastName,
+                                    @NotNull @RequestParam String firstName,
+                                    @NotNull @RequestParam String lastName,
                                     HttpServletResponse response) {
         log.debug("HTTP PUT request received for updateMedicalRecord: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()));
@@ -83,9 +84,9 @@ public class MedicalRecordController {
         }
     }
 
-    @DeleteMapping("/{firstName}/{lastName}")
-    public void deleteMedicalRecord(@NotNull @PathVariable("firstName") String firstName,
-                                    @NotNull @PathVariable("lastName") String lastName,
+    @DeleteMapping("/medicalRecord")
+    public void deleteMedicalRecord(@NotNull @RequestParam String firstName,
+                                    @NotNull @RequestParam String lastName,
                                     HttpServletResponse response) {
         log.debug("HTTP DELETE request received for deleteMedicalRecord: {} {}", firstName, lastName);
         Optional<MedicalRecord> medicalOptional = Optional.ofNullable(medicalRecordService.getMedicalRecordByFirstLastName(firstName, lastName));

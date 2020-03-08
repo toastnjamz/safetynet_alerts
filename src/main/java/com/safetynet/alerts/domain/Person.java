@@ -45,6 +45,17 @@ public class Person {
 		this.age = age;
 	}
 
+	public Person(String firstName, String lastName, String address, String email, String age, List<String> medications,
+				  List<String> allergies) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.email = email;
+		this.age = age;
+		this.medications = medications;
+		this.allergies = allergies;
+	}
+
 	public Person(String firstName, String lastName, String phone, String age, List<String> medications,
 				  List<String> allergies) {
 		this.firstName = firstName;
