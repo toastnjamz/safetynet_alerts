@@ -33,8 +33,8 @@ public class FireStationController {
         return JsonStream.serialize(fireStationService.getAllFireStations());
     }
 
-    @GetMapping("/firestation/{address}")
-    public String getFireStationByAddress(@NotNull @PathVariable("address") String address,
+    @GetMapping("/firestation")
+    public String getFireStationByAddress(@NotNull @RequestParam String address,
                                           HttpServletResponse response) {
         log.debug("HTTP GET request received for getFireStationByAddress: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
@@ -66,9 +66,9 @@ public class FireStationController {
         }
     }
 
-    @PutMapping("/firestation/{address}")
+    @PutMapping("/firestation")
     public void updateFireStation(@NotNull @RequestBody FireStation fireStation,
-                                  @NotNull @PathVariable("address") String address,
+                                  @NotNull @RequestParam String address,
                                   HttpServletResponse response) {
         log.debug("HTTP PUT request received for updateFireStation: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
@@ -83,8 +83,8 @@ public class FireStationController {
         }
     }
 
-    @DeleteMapping("/firestation/{address}")
-    public void deleteFireStation(@NotNull @PathVariable("address") String address,
+    @DeleteMapping("/firestation")
+    public void deleteFireStation(@NotNull @RequestParam String address,
                                   HttpServletResponse response) {
         log.debug("HTTP DELETE request received for deleteFireStation: {}", address);
         Optional<FireStation> stationOptional = Optional.ofNullable(fireStationService.getFireStationByAddress(address));
