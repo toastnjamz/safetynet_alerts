@@ -17,10 +17,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MedicalRecordControllerTest {
 
     @Autowired
@@ -65,6 +66,7 @@ public class MedicalRecordControllerTest {
     public void createMedicalRecord_recordDoesNotAlreadyExist_medicalRecordDataReturned() throws Exception {
         this.mockMvc.perform(post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{ \"firstName\":\"Test\", \"lastName\":\"Person\", \"birthdate\":\"11/26/1984\", \"medications\":[\"testMed1:1mg\", \"testMed2:2mg\"], \"allergies\":[\"fresh air\"] }"))
+                .andExpect(content().json("{ \"firstName\":\"Test\", \"lastName\":\"Person\", \"birthdate\":\"11/26/1984\", \"medications\":[\"testMed1:1mg\", \"testMed2:2mg\"], \"allergies\":[\"fresh air\"] }"))
                 .andExpect(status().isCreated());
     }
 

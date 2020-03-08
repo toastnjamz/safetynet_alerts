@@ -17,10 +17,11 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PersonControllerTest {
 
     @Autowired
@@ -54,6 +55,7 @@ public class PersonControllerTest {
     public void createPerson_personDoesNotAlreadyExist_personDataReturned() throws Exception {
         this.mockMvc.perform(post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\"firstName\":\"Test\",\"lastName\":\"Person\",\"address\":\"1509 Culver St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
+                .andExpect(content().json("{\"firstName\":\"Test\",\"lastName\":\"Person\",\"address\":\"1509 Culver St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
                 .andExpect(status().isCreated());
     }
 

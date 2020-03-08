@@ -33,7 +33,7 @@ public class FireStationController {
         return JsonStream.serialize(fireStationService.getAllFireStations());
     }
 
-    @GetMapping("/firestation")
+    @GetMapping("/Firestation")
     public String getFireStationByAddress(@NotNull @RequestParam String address,
                                           HttpServletResponse response) {
         log.debug("HTTP GET request received for getFireStationByAddress: {}", address);
@@ -129,7 +129,6 @@ public class FireStationController {
         }
     }
 
-    //TODO: test
     @GetMapping("/flood/stations")
     public String getHouseholdsByStationList(@NotNull @RequestParam List<String> stations,
                                              HttpServletResponse response) {
