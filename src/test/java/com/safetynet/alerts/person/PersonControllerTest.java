@@ -52,11 +52,28 @@ public class PersonControllerTest {
     }
 
     @Test
+    public void getPersonByFirstLastName_personDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/person")
+                .param("firstName", "Test")
+                .param("lastName", "Person"))
+                .andExpect(content().string("Person with name Test Person does not exist"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void createPerson_personDoesNotAlreadyExist_personDataReturned() throws Exception {
         this.mockMvc.perform(post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\"firstName\":\"Test\",\"lastName\":\"Person\",\"address\":\"1509 Culver St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
                 .andExpect(content().json("{\"firstName\":\"Test\",\"lastName\":\"Person\",\"address\":\"1509 Culver St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void createPerson_personAlreadyExist_isConflict() throws Exception {
+        this.mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\"firstName\":\"John\",\"lastName\":\"Boyd\",\"address\":\"1509 Culver St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
+                .andExpect(content().string("Person John Boyd already exists"))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -69,11 +86,28 @@ public class PersonControllerTest {
     }
 
     @Test
+    public void updatePerson_personDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(put("/person")
+                .param("firstName", "Test")
+                .param("lastName", "Person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\"firstName\":\"Test\",\"lastName\":\"Person\",\"address\":\"123 Test St\",\"city\":\"Culver\",\"zip\":\"97451\",\"phone\":\"841-874-6512\",\"email\":\"jaboyd@email.com\"}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void deletePerson_personExists_personDataDeleted() throws Exception {
         this.mockMvc.perform(delete("/person")
                 .param("firstName", "John")
                 .param("lastName", "Boyd"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deletePerson_personDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(delete("/person")
+                .param("firstName", "Test")
+                .param("lastName", "Person"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -86,7 +120,16 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void getChildrenAtAddress_childrenAtAddress_personListReturned() throws Exception {
+    public void getPersonInfo_personDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/personInfo")
+                .param("firstName", "Test")
+                .param("lastName", "Person"))
+                .andExpect(content().string("Person with name Test Person does not exist"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getChildrenAtAddress_validAddress_personListReturned() throws Exception {
         this.mockMvc.perform(get("/childAlert")
                 .param("address", "1509 Culver St"))
                 .andExpect(content().json("[{\"firstName\":\"Tenley\",\"lastName\":\"Boyd\",\"age\":\"8\"},{\"firstName\":\"Roger\",\"lastName\":\"Boyd\",\"age\":\"2\"},{\"firstName\":\"John\",\"lastName\":\"Boyd\",\"age\":\"36\"},{\"firstName\":\"Jacob\",\"lastName\":\"Boyd\",\"age\":\"31\"},{\"firstName\":\"Felicia\",\"lastName\":\"Boyd\",\"age\":\"34\"}]"))
@@ -94,7 +137,15 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void getPersonsEmailsByCity_emailsForCityExist_emailsListReturned() throws Exception {
+    public void getChildrenAtAddress_invalidAddress__emptyStringReturned() throws Exception {
+        this.mockMvc.perform(get("/childAlert")
+                .param("address", "1 Imaginary Street"))
+                .andExpect(content().string(""))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getPersonsEmailsByCity_cityExists_emailsListReturned() throws Exception {
         this.mockMvc.perform(get("/communityEmail")
                 .param("city", "Culver"))
                 .andExpect(content().json("[\n" +
@@ -123,5 +174,13 @@ public class PersonControllerTest {
                         "    \"gramps@email.com\"\n" +
                         "]"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPersonsEmailsByCity_cityDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/communityEmail")
+                .param("city", "Universal City"))
+                .andExpect(content().string("No emails were found for Universal City"))
+                .andExpect(status().isNotFound());
     }
 }
