@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 public class FireStationServiceTest {
@@ -107,6 +106,17 @@ public class FireStationServiceTest {
     }
 
     @Test
+    public void getFireStationByAddress_fireStationDoesNotExist_nullReturned() {
+        // arrange
+
+        // act
+        FireStation result = fireStationService.getFireStationByAddress("1 Imaginary Street");
+
+        // assert
+        assertNull(result);
+    }
+
+    @Test
     public void createFireStation_addingValidFireStation_fireStationDataReturned() {
         // arrange
         FireStation fireStation3 = new FireStation("123 Test Street", "11");
@@ -116,6 +126,18 @@ public class FireStationServiceTest {
 
         // assert
         assertTrue(result.equals(fireStation3));
+    }
+
+    @Test
+    public void createFireStation_addingExistingFireStation_nullReturned() {
+        // arrange
+        FireStation invalidFirestation = new FireStation("123 Market Street", "9");
+
+        // act
+        FireStation result = fireStationService.createFireStation(invalidFirestation);
+
+        // assert
+        assertNull(result);
     }
 
     @Test
@@ -130,6 +152,18 @@ public class FireStationServiceTest {
 
         // assert
         assertEquals(fireStation1.getStation(), "0");
+    }
+
+    @Test
+    public void updateFireStation_updatingNonexistentFireStation_nullReturned() {
+        // arrange
+        FireStation invalidFirestation = new FireStation("1 Imaginary Street", "0");
+
+        // act
+        fireStationService.updateFireStation(invalidFirestation);
+
+        // assert
+        assertNull(fireStationService.getFireStationByAddress(invalidFirestation.getAddress()));
     }
 
     @Test
@@ -148,6 +182,19 @@ public class FireStationServiceTest {
     }
 
     @Test
+    public void deleteFireStation_fireStationDoesNotExist_nullReturned() {
+        // arrange
+        assertEquals(fireStationService.getAllFireStations().size(), 2);
+
+        // act
+        fireStationService.deleteFireStation("1 Imaginary Street");
+
+        // assert
+        assertEquals(2, fireStationRepository.findAll().size());
+        assertEquals(fireStationService.getAllFireStations().size(), 2);
+    }
+
+    @Test
     public void getAddressesByStationNumber_fireStationExists_addressDataReturned() {
         // arrange
         FireStation fireStation3 = new FireStation("456 Testington Manor", "9");
@@ -162,6 +209,17 @@ public class FireStationServiceTest {
     }
 
     @Test
+    public void getAddressesByStationNumber_fireStationDoesNotExist_emptyListReturned() {
+        // arrange
+
+        // act
+        List<String> result = fireStationService.getAddressesByStationNumber("0");
+
+        // assert
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void getPersonsByStationNumber_fireStationExists_personDataReturned() {
         // arrange
 
@@ -170,6 +228,17 @@ public class FireStationServiceTest {
 
         // assert
         assertEquals(result.get(0).getFirstName(), "Duncan");
+    }
+
+    @Test
+    public void getPersonsByStationNumber_fireStationDoesNotExist_emptyListReturned() {
+        // arrange
+
+        // act
+        List<Person> result = fireStationService.getPersonsByStationNumber("0");
+
+        // assert
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -187,6 +256,18 @@ public class FireStationServiceTest {
     }
 
     @Test
+    public void getListAdultsAndChildrenByStationNumber_fireStationDoesNotExist_emptyListReturned() {
+        // arrange
+
+        // act
+        AdultsAndChildrenServicedByStation result = fireStationService.getListAdultsAndChildrenByStationNumber("0");
+
+        // assert
+        assertEquals(result.getFormattedPersonList().size(), 0);
+
+    }
+
+    @Test
     public void getStationAndPersonsByAddress_addressExists_stationAndPersonDataReturned() {
         // arrange
 
@@ -195,6 +276,17 @@ public class FireStationServiceTest {
 
         // assert
         assertEquals("Duncan", resultsMap.get("9").get(0).getFirstName());
+    }
+
+    @Test
+    public void getStationAndPersonsByAddress_addressDoesNotExist_emptyHashMapReturned() {
+        // arrange
+
+        // act
+        HashMap<String, List<Person>> resultsMap = fireStationService.getStationAndPersonsByAddress("1 Imaginary Street");
+
+        // assert
+        assertTrue(resultsMap.isEmpty());
     }
 
     @Test
@@ -213,6 +305,20 @@ public class FireStationServiceTest {
     }
 
     @Test
+    public void getHouseholdsByStationList_stationListInvalid_emptyListReturned() {
+        // arrange
+        List<String> stationList = new ArrayList<>();
+        stationList.add("99");
+        stationList.add("100");
+
+        // act
+        List<Household> result = fireStationService.getHouseholdsByStationList(stationList);
+
+        // assert
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void getPhoneNumbersByStationNumber_fireStationExists_phoneDataReturned() {
         // arrange
 
@@ -221,5 +327,16 @@ public class FireStationServiceTest {
 
         // assert
         assertEquals(result.get(0),"444-444-4444");
+    }
+
+    @Test
+    public void getPhoneNumbersByStationNumber_fireStationDoesNotExist_emptyListReturned() {
+        // arrange
+
+        // act
+        List<String> result = fireStationService.getPhoneNumbersByStationNumber("0");
+
+        // assert
+        assertTrue(result.isEmpty());
     }
 }
