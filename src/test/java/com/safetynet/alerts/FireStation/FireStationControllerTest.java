@@ -67,7 +67,7 @@ public class FireStationControllerTest {
     }
 
     @Test
-    public void createFireStation_addingInvalidFireStation_isConflict() throws Exception {
+    public void createFireStation_addingExistingFireStation_isConflict() throws Exception {
         this.mockMvc.perform(post("/firestation")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\n" +
                         "\"address\": \"1509 Culver St\",\n" +

@@ -63,11 +63,28 @@ public class MedicalRecordControllerTest {
     }
 
     @Test
+    public void getMedicalRecordByFirstLastName_medicalRecordDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/medicalRecord")
+                .param("firstName", "Test")
+                .param("lastName", "Person"))
+                .andExpect(content().string("Medical record for Test Person does not exist"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void createMedicalRecord_recordDoesNotAlreadyExist_medicalRecordDataReturned() throws Exception {
         this.mockMvc.perform(post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{ \"firstName\":\"Test\", \"lastName\":\"Person\", \"birthdate\":\"11/26/1984\", \"medications\":[\"testMed1:1mg\", \"testMed2:2mg\"], \"allergies\":[\"fresh air\"] }"))
                 .andExpect(content().json("{ \"firstName\":\"Test\", \"lastName\":\"Person\", \"birthdate\":\"11/26/1984\", \"medications\":[\"testMed1:1mg\", \"testMed2:2mg\"], \"allergies\":[\"fresh air\"] }"))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void createMedicalRecord_recordAlreadyExist_isConflict() throws Exception {
+        this.mockMvc.perform(post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"birthdate\":\"11/26/1984\", \"medications\":[\"testMed1:1mg\", \"testMed2:2mg\"], \"allergies\":[\"fresh air\"] }"))
+                .andExpect(content().string("Medical record for John Boyd already exists"))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -91,10 +108,38 @@ public class MedicalRecordControllerTest {
     }
 
     @Test
+    public void updateMedicalRecord_medicalRecordDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(put("/medicalRecord")
+                .param("firstName", "Test")
+                .param("lastName", "Person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\n" +
+                        "\"firstName\": \"Test\",\n" +
+                        "\"lastName\": \"Person\",\n" +
+                        "\"birthdate\": \"03/06/1984\",\n" +
+                        "\"medications\": [\n" +
+                        "\"aznol:350mg\",\n" +
+                        "\"hydrapermazol:1000mg\"\n" +
+                        "],\n" +
+                        "\"allergies\": [\n" +
+                        "\"fresh air\"\n" +
+                        "]\n" +
+                        "}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void deleteMedicalRecord_medicalRecordExists_medicalRecordDataDeleted() throws Exception {
         this.mockMvc.perform(delete("/medicalRecord")
                 .param("firstName", "John")
                 .param("lastName", "Boyd"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteMedicalRecord_medicalRecordDoesNotExists_isNotFound() throws Exception {
+        this.mockMvc.perform(delete("/medicalRecord")
+                .param("firstName", "Test")
+                .param("lastName", "Person"))
+                .andExpect(status().isNotFound());
     }
 }

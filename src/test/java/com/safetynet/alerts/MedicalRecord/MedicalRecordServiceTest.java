@@ -63,6 +63,17 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
+    public void getMedicalRecordByFirstLastName_medicalRecordDoesNotExist_nullReturned() {
+        // arrange
+
+        // act
+        MedicalRecord result = medicalRecordService.getMedicalRecordByFirstLastName("Test", "Person");
+
+        // assert
+        assertNull(result);
+    }
+
+    @Test
     public void createMedicalRecord_addingValidMedicalRecord_medicalRecordDataReturned() {
         List<String> medicationsList3 = new ArrayList<>(); { medicationsList3.add("medication3"); }
         List<String> allergiesList3 = new ArrayList<>(); { allergiesList3.add("allergy3"); }
@@ -79,6 +90,15 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
+    public void createMedicalRecord_addingExistingMedicalRecord_nullReturned() {
+        // act
+        MedicalRecord result = medicalRecordService.createMedicalRecord(medicalRecord1);
+
+        // assert
+        assertNull(result);
+    }
+
+    @Test
     public void updateMedicalRecord_updatingValidMedicalRecord_medicalRecordDataUpdated() {
         // arrange
         List<String> medicationsList3 = new ArrayList<>(); { medicationsList3.add("medication3"); }
@@ -92,7 +112,19 @@ public class MedicalRecordServiceTest {
         // assert
         assertEquals(updatedRecord.getBirthdate(), "02/01/1960");
         assertEquals(updatedRecord.getMedications(), medicationsList3);
+    }
 
+    @Test
+    public void updateMedicalRecord_updatingInvaliddMedicalRecord_nothingHappens() {
+        // arrange
+        List<String> medicationsList3 = new ArrayList<>(); { medicationsList3.add("medication3"); }
+        List<String> allergiesList3 = new ArrayList<>(); { allergiesList3.add("allergy3"); }
+
+        // act
+        MedicalRecord updatedRecord = new MedicalRecord("Test", "Person", "02/01/1960", medicationsList3, allergiesList3);
+
+        // assert
+        assertNull(medicalRecordService.getMedicalRecordByFirstLastName("Test", "Person"));
     }
 
     @Test
@@ -106,5 +138,17 @@ public class MedicalRecordServiceTest {
         // assert
         assertEquals(medicalRecordRepository.findAll().size(), 1);
         assertEquals(medicalRecordRepository.findAll().get(0).getFirstName(), "Jessica");
+    }
+
+    @Test
+    public void deleteMedicalRecord_medicalRecordDoesNotExist_nothingHappens() {
+        // arrange
+        assertEquals(medicalRecordRepository.findAll().size(), 2);
+
+        // act
+        medicalRecordService.deleteMedicalRecord("Test", "Person");
+
+        // assert
+        assertEquals(medicalRecordRepository.findAll().size(), 2);
     }
 }
