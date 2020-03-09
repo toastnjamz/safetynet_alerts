@@ -131,10 +131,10 @@ public class FireStationServiceTest {
     @Test
     public void createFireStation_addingExistingFireStation_nullReturned() {
         // arrange
-        FireStation invalidFirestation = new FireStation("123 Market Street", "9");
+        FireStation duplicateFirestation = new FireStation("123 Market Street", "9");
 
         // act
-        FireStation result = fireStationService.createFireStation(invalidFirestation);
+        FireStation result = fireStationService.createFireStation(duplicateFirestation);
 
         // assert
         assertNull(result);
@@ -155,7 +155,7 @@ public class FireStationServiceTest {
     }
 
     @Test
-    public void updateFireStation_updatingNonexistentFireStation_nullReturned() {
+    public void updateFireStation_updatingNonexistentFireStation_nothingHappens() {
         // arrange
         FireStation invalidFirestation = new FireStation("1 Imaginary Street", "0");
 
@@ -182,7 +182,7 @@ public class FireStationServiceTest {
     }
 
     @Test
-    public void deleteFireStation_fireStationDoesNotExist_nullReturned() {
+    public void deleteFireStation_fireStationDoesNotExist_nothingHappens() {
         // arrange
         assertEquals(fireStationService.getAllFireStations().size(), 2);
 
@@ -190,7 +190,6 @@ public class FireStationServiceTest {
         fireStationService.deleteFireStation("1 Imaginary Street");
 
         // assert
-        assertEquals(2, fireStationRepository.findAll().size());
         assertEquals(fireStationService.getAllFireStations().size(), 2);
     }
 
