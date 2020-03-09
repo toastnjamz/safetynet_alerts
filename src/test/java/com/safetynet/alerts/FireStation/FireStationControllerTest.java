@@ -51,11 +51,30 @@ public class FireStationControllerTest {
     }
 
     @Test
+    public void getFireStationByAddress_fireStationDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/Firestation")
+                .param("address", "1 Imaginary Street"))
+                .andExpect(content().string("Station not found for address 1 Imaginary Street"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void createFireStation_addingValidFireStation_fireStationDataReturned() throws Exception {
         this.mockMvc.perform(post("/firestation")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\"address\":\"123 Easy Street\",\"station\":\"1\"}"))
                 .andExpect(content().json("{\"address\":\"123 Easy Street\",\"station\":\"1\"}"))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void createFireStation_addingInvalidFireStation_isConflict() throws Exception {
+        this.mockMvc.perform(post("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\n" +
+                        "\"address\": \"1509 Culver St\",\n" +
+                        "\"station\": \"3\"\n" +
+                        "}"))
+                .andExpect(content().string("Station for address 1509 Culver St already exists"))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -70,10 +89,28 @@ public class FireStationControllerTest {
     }
 
     @Test
+    public void updateFireStation_updatingInvalidFireStation_isNotFound() throws Exception {
+        this.mockMvc.perform(put("/firestation")
+                .param("address", "1 Imaginary Street")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content("{\n" +
+                        "\"address\": \"1 Imaginary Street\",\n" +
+                        "\"station\": \"1\"\n" +
+                        "}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void deleteFireStation_fireStationExists_fireStationDataDeleted() throws Exception {
         this.mockMvc.perform(delete("/firestation")
                 .param("address", "1509 Culver St"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteFireStation_fireStationDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(delete("/firestation")
+                .param("address", "1 Imaginary Street"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -85,11 +122,27 @@ public class FireStationControllerTest {
     }
 
     @Test
+    public void getPersonsByStation_fireStationDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/firestation")
+                .param("stationNumber", "0"))
+                .andExpect(content().string("Persons not found for station number 0"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void getStationAndPersonsByAddress_addressExists_stationAndPersonDataReturned() throws Exception {
         this.mockMvc.perform(get("/fire")
                 .param("address", "908 73rd St"))
                 .andExpect(content().json("{\"1\":[{\"firstName\":\"Peter\",\"lastName\":\"Duncan\",\"medications\":[],\"allergies\":[\"shellfish\"],\"phone\":\"841-874-6512\",\"age\":\"19\"},{\"firstName\":\"Reginold\",\"lastName\":\"Walker\",\"medications\":[\"thradox:700mg\"],\"allergies\":[\"illisoxian\"],\"phone\":\"841-874-8547\",\"age\":\"40\"},{\"firstName\":\"Jamie\",\"lastName\":\"Peters\",\"medications\":[],\"allergies\":[],\"phone\":\"841-874-7462\",\"age\":\"38\"},{\"firstName\":\"Brian\",\"lastName\":\"Stelzer\",\"medications\":[\"ibupurin:200mg\",\"hydrapermazol:400mg\"],\"allergies\":[\"nillacilan\"],\"phone\":\"841-874-7784\",\"age\":\"44\"},{\"firstName\":\"Shawna\",\"lastName\":\"Stelzer\",\"medications\":[],\"allergies\":[],\"phone\":\"841-874-7784\",\"age\":\"39\"},{\"firstName\":\"Kendrik\",\"lastName\":\"Stelzer\",\"medications\":[\"noxidian:100mg\",\"pharmacol:2500mg\"],\"allergies\":[],\"phone\":\"841-874-7784\",\"age\":\"6\"}]}"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getStationAndPersonsByAddress_addressDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/fire")
+                .param("address", "1 Imaginary Street"))
+                .andExpect(content().string("Station and persons not found for address 1 Imaginary Street"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -101,10 +154,26 @@ public class FireStationControllerTest {
     }
 
     @Test
+    public void getHouseholdsByStationList_stationListInvalid_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/flood/stations")
+                .param("stations", "0"))
+                .andExpect(content().string("No household info found for [0]"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void getPhoneNumbersByStation_fireStationExists_phoneDataReturned() throws Exception {
         this.mockMvc.perform(get("/phoneAlert")
                 .param("firestation", "1"))
                 .andExpect(content().json("[\"841-874-6512\",\"841-874-8547\",\"841-874-7462\",\"841-874-7784\",\"841-874-7784\",\"841-874-7784\"]"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPhoneNumbersByStation_fireStationDoesNotExist_isNotFound() throws Exception {
+        this.mockMvc.perform(get("/phoneAlert")
+                .param("firestation", "0"))
+                .andExpect(content().string("No phone numbers found for station number 0"))
+                .andExpect(status().isNotFound());
     }
 }

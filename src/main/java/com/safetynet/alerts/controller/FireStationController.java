@@ -103,7 +103,7 @@ public class FireStationController {
     public String getPersonsByStation(@NotNull @RequestParam("stationNumber") String stationNumber,
                                       HttpServletResponse response) {
         log.debug("HTTP GET request received for getPersonsByStation: {}", stationNumber);
-        if (fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber) != null) {
+        if (fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber).getFormattedPersonList().size() != 0) {
             log.info("HTTP GET request received for getPersonsByStation, SUCCESS");
             return JsonStream.serialize(fireStationService.getListAdultsAndChildrenByStationNumber(stationNumber));
         }
