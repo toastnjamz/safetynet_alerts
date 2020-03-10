@@ -101,10 +101,9 @@
 				<configuration>
 					<includes>
 						<include>**/*Test.java</include>
-						<include>**/*IT.java</include>
 					</includes>
 				</configuration>
-				<version>3.0.0-M3</version>
+				<version>3.0.0-M4</version>g
 			</plugin>
 
 			<plugin>
