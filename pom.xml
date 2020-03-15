@@ -95,22 +95,34 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-
 							<dataFile>target/jacoco.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
 							<outputDirectory>target/my-reports</outputDirectory>
 						</configuration>
-
 					</execution>
-					<!--<configuration>
-                        <systemPropertyVariables>
-                            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-                        </systemPropertyVariables>
-                    </configuration>-->
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+				<version>3.0.0-M3</version>
+			</plugin>
+
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.0.0-M3</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
 </project>
