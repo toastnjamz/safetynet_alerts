@@ -7,42 +7,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class MedicalRecordService {
+public interface MedicalRecordService {
 
-    private MedicalRecordRepository medicalRecordRepository;
+    public List<MedicalRecord> getAllMedicalRecords();
 
-    @Autowired
-    public MedicalRecordService(MedicalRecordRepository medicalRecordRepository) {
-        this.medicalRecordRepository = medicalRecordRepository;
-    }
+    public MedicalRecord getMedicalRecordByFirstLastName(String firstName, String lastName);
 
-    public List<MedicalRecord> getAllMedicalRecords() {
-        return medicalRecordRepository.findAll();
-    }
+    public MedicalRecord createMedicalRecord(MedicalRecord medicalRecord);
 
-    public MedicalRecord getMedicalRecordByFirstLastName(String firstName, String lastName) {
-        return medicalRecordRepository.findMedicalRecord(firstName, lastName);
-    }
+    public void updateMedicalRecord(MedicalRecord medicalRecord);
 
-    public MedicalRecord createMedicalRecord(MedicalRecord medicalRecord) {
-        for (MedicalRecord medicalInList : medicalRecordRepository.findAll()) {
-            if (medicalInList.equals(medicalRecord)) {
-                return null;
-            }
-        }
-        return medicalRecordRepository.createMedicalRecord(medicalRecord);
-    }
-
-    public void updateMedicalRecord(MedicalRecord medicalRecord) {
-        if (medicalRecordRepository.findMedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()) != null) {
-            medicalRecordRepository.updateMedicalRecord(medicalRecord);
-        }
-    }
-
-    public void deleteMedicalRecord(String firstName, String lastName) {
-        if (medicalRecordRepository.findMedicalRecord(firstName, lastName) != null) {
-            medicalRecordRepository.deleteMedicalRecord(firstName, lastName);
-        }
-    }
+    public void deleteMedicalRecord(String firstName, String lastName);
 }

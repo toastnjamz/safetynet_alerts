@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.service.MedicalRecordService;
+import com.safetynet.alerts.service.MedicalRecordServiceImpl;
+import com.safetynet.alerts.service.PersonServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +37,8 @@ public class PersonServiceTest {
 	public void setup() {
 		personRepository = new PersonRepository();
 		medicalRecordRepository = new MedicalRecordRepository();
-		medicalRecordService = new MedicalRecordService(medicalRecordRepository);
-		personService = new PersonService(personRepository, medicalRecordService);
+		medicalRecordService = new MedicalRecordServiceImpl(medicalRecordRepository);
+		personService = new PersonServiceImpl(personRepository, medicalRecordService);
 
 		person1 = new Person("Duncan", "Idaho", "123 Market Street", "Giedi Prime",
 				"12345", "555-555-5555", "duncan@gmail.com");

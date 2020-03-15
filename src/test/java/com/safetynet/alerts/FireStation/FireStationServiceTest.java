@@ -4,9 +4,7 @@ import com.safetynet.alerts.domain.*;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.FireStationService;
-import com.safetynet.alerts.service.MedicalRecordService;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +38,10 @@ public class FireStationServiceTest {
     public void setup() {
         personRepository = new PersonRepository();
         medicalRecordRepository = new MedicalRecordRepository();
-        medicalRecordService = new MedicalRecordService(medicalRecordRepository);
-        personService = new PersonService(personRepository, medicalRecordService);
+        medicalRecordService = new MedicalRecordServiceImpl(medicalRecordRepository);
+        personService = new PersonServiceImpl(personRepository, medicalRecordService);
         fireStationRepository = new FireStationRepository();
-        fireStationService = new FireStationService(fireStationRepository, personService, medicalRecordService);
+        fireStationService = new FireStationServiceImpl(fireStationRepository, personService, medicalRecordService);
 
         fireStation1 = new FireStation("123 Market Street", "9");
         fireStation2 = new FireStation("1 Grand Palace", "10");

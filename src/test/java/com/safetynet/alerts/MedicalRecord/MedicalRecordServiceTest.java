@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import com.safetynet.alerts.domain.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.service.MedicalRecordService;
+import com.safetynet.alerts.service.MedicalRecordServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class MedicalRecordServiceTest {
     @Before
     public void setup() {
         medicalRecordRepository = new MedicalRecordRepository();
-        medicalRecordService = new MedicalRecordService(medicalRecordRepository);
+        medicalRecordService = new MedicalRecordServiceImpl(medicalRecordRepository);
 
         List<String> medicationsList1 = new ArrayList<>(); { medicationsList1.add("medication1"); }
         List<String> medicationsList2 = new ArrayList<>(); { medicationsList2.add("medication2"); }
